@@ -19,3 +19,17 @@ func ExampleGetField() {
         fmt.Println(value)
     }
 }
+
+func ExampleHasField() {
+    s := MyStruct {
+        FirstField: "first value",
+        SecondField: 2,
+        ThirdField: "third value",
+    }
+
+    // has == true
+    has, _ := reflections.HasField(s, "FirstField")
+
+    // has == false
+    has, _ := reflections.HasField(s, "FourthField")
+}
