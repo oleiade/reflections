@@ -167,5 +167,5 @@ unexported fields cannot be set, and that field type and value type have to matc
 * Write tests which shows that the bug was fixed or that the feature works as expected.
 * Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to AUTHORS_.
 
-.. _`the repository`: http://github.com/oleiade/reflections
-.. _AUTHORS: https://github.com/oleiade/reflections/blob/master/AUTHORS.rst
+[the repository](http://github.com/oleiade/reflections)
+[AUTHORS](https://github.com/oleiade/reflections/blob/master/AUTHORS.md)
