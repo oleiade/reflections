@@ -5,6 +5,12 @@ import (
     "github.com/oleiade/reflections"
 )
 
+type MyStruct struct {
+    FirstField  string      `matched:"first tag"`
+    SecondField int         `matched:"second tag"`
+    ThirdField  string      `unmatched:"third tag"`
+}
+
 func ExampleGetField() {
     s := MyStruct {
         FirstField: "first value",
@@ -65,9 +71,9 @@ func ExampleItems() {
 
 func ExampleTags() {
     s := MyStruct {
-        FirstField: "first value",      `matched:"first tag"`
-        SecondField: 2,                 `matched:"second tag"`
-        ThirdField: "third value",      `unmatched:"third tag"`
+        FirstField: "first value",
+        SecondField: 2,
+        ThirdField: "third value",
     }
 
     var structTags map[string]string
