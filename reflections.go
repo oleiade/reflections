@@ -30,8 +30,8 @@ func GetField(obj interface{}, name string) (interface{}, error) {
     value := val.FieldByName(name)
 
     if !value.IsValid() {
-        err_msg := fmt.Sprintf("No such field: %s in obj", name)
-        return nil, errors.New(err_msg)
+        errMsg := fmt.Sprintf("No such field: %s in obj", name)
+        return nil, errors.New(errMsg)
     }
 
     return value.Interface(), nil
@@ -46,14 +46,14 @@ func SetField(obj interface{}, name string, value interface{}) error {
     structFieldValue := structValue.FieldByName(name)
 
     if !structFieldValue.IsValid() {
-        err_msg := fmt.Sprintf("No such field: %s in obj", name)
-        return errors.New(err_msg)
+        errMsg := fmt.Sprintf("No such field: %s in obj", name)
+        return errors.New(errMsg)
     }
 
     // If obj field value is not settable an error is thrown
     if !structFieldValue.CanSet() {
-        err_msg := fmt.Sprintf("Cannot set %s field value", name)
-        return errors.New(err_msg)
+        errMsg := fmt.Sprintf("Cannot set %s field value", name)
+        return errors.New(errMsg)
     }
 
     invalidTypeError := errors.New("Provided value type didn't match obj field type")
