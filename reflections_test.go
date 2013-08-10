@@ -5,61 +5,61 @@
 package reflections
 
 import (
-    "testing"
-    "github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 type TestStruct struct {
-    unexported  uint64
-    Dummy       string      `test:"dummytag"`
-    Yummy       int         `test:"yummytag"`
+	unexported uint64
+	Dummy      string `test:"dummytag"`
+	Yummy      int    `test:"yummytag"`
 }
 
 func TestGetField_on_struct(t *testing.T) {
-    dummyStruct := TestStruct {
-        Dummy: "test",
-    }
+	dummyStruct := TestStruct{
+		Dummy: "test",
+	}
 
-    value, err := GetField(dummyStruct, "Dummy")
-    assert.NoError(t, err)
-    assert.Equal(t, value, "test")
+	value, err := GetField(dummyStruct, "Dummy")
+	assert.NoError(t, err)
+	assert.Equal(t, value, "test")
 }
 
 func TestGetField_on_non_struct(t *testing.T) {
-    dummy := "abc 123"
+	dummy := "abc 123"
 
-    _, err := GetField(dummy, "Dummy")
-    assert.Error(t, err)
+	_, err := GetField(dummy, "Dummy")
+	assert.Error(t, err)
 }
 
 func TestGetField_non_existing_field(t *testing.T) {
-    dummyStruct := TestStruct {
-        Dummy: "test",
-    }
+	dummyStruct := TestStruct{
+		Dummy: "test",
+	}
 
-    _, err := GetField(dummyStruct, "obladioblada")
-    assert.Error(t, err)
+	_, err := GetField(dummyStruct, "obladioblada")
+	assert.Error(t, err)
 }
 
 func TestGetField_unexported_field(t *testing.T) {
-    dummyStruct := TestStruct {
-        unexported: 12345,
-        Dummy: "test",
-    }
+	dummyStruct := TestStruct{
+		unexported: 12345,
+		Dummy:      "test",
+	}
 
-    assert.Panics(t, func() {
-        GetField(dummyStruct, "unexported")
-    })
+	assert.Panics(t, func() {
+		GetField(dummyStruct, "unexported")
+	})
 }
 
 func TestSetField_on_struct_with_valid_value_type(t *testing.T) {
-    dummyStruct := TestStruct {
-        Dummy: "test",
-    }
+	dummyStruct := TestStruct{
+		Dummy: "test",
+	}
 
-    err := SetField(&dummyStruct, "Dummy", "abc")
-    assert.NoError(t, err)
-    assert.Equal(t, dummyStruct.Dummy, "abc")
+	err := SetField(&dummyStruct, "Dummy", "abc")
+	assert.NoError(t, err)
+	assert.Equal(t, dummyStruct.Dummy, "abc")
 }
 
 // func TestSetField_on_non_struct(t *testing.T) {
@@ -70,140 +70,140 @@ func TestSetField_on_struct_with_valid_value_type(t *testing.T) {
 // }
 
 func TestSetField_non_existing_field(t *testing.T) {
-    dummyStruct := TestStruct {
-        Dummy: "test",
-    }
+	dummyStruct := TestStruct{
+		Dummy: "test",
+	}
 
-    err := SetField(&dummyStruct, "obladioblada", "life goes on")
-    assert.Error(t, err)
+	err := SetField(&dummyStruct, "obladioblada", "life goes on")
+	assert.Error(t, err)
 }
 
 func TestSetField_invalid_value_type(t *testing.T) {
-    dummyStruct := TestStruct {
-        Dummy: "test",
-    }
+	dummyStruct := TestStruct{
+		Dummy: "test",
+	}
 
-    err := SetField(&dummyStruct, "Yummy", "123")
-    assert.Error(t, err)
+	err := SetField(&dummyStruct, "Yummy", "123")
+	assert.Error(t, err)
 }
 
 func TestSetField_non_exported_field(t *testing.T) {
-    dummyStruct := TestStruct {
-        Dummy: "test",
-    }
+	dummyStruct := TestStruct{
+		Dummy: "test",
+	}
 
-    assert.Error(t, SetField(&dummyStruct, "unexported", "fail, bitch"))
+	assert.Error(t, SetField(&dummyStruct, "unexported", "fail, bitch"))
 }
 
 func TestFields_on_struct(t *testing.T) {
-    dummyStruct := TestStruct {
-        Dummy: "test",
-        Yummy: 123,
-    }
+	dummyStruct := TestStruct{
+		Dummy: "test",
+		Yummy: 123,
+	}
 
-    fields, err := Fields(dummyStruct)
-    assert.NoError(t, err)
-    assert.Equal(t, fields, []string{"Dummy", "Yummy"})
+	fields, err := Fields(dummyStruct)
+	assert.NoError(t, err)
+	assert.Equal(t, fields, []string{"Dummy", "Yummy"})
 }
 
 func TestFields_on_non_struct(t *testing.T) {
-    dummy := "abc 123"
+	dummy := "abc 123"
 
-    _, err := Fields(dummy)
-    assert.Error(t, err)
+	_, err := Fields(dummy)
+	assert.Error(t, err)
 }
 
 func TestFields_with_non_exported_fields(t *testing.T) {
-    dummyStruct := TestStruct {
-        unexported: 6789,
-        Dummy: "test",
-        Yummy: 123,
-    }
+	dummyStruct := TestStruct{
+		unexported: 6789,
+		Dummy:      "test",
+		Yummy:      123,
+	}
 
-    fields, err := Fields(dummyStruct)
-    assert.NoError(t, err)
-    assert.Equal(t, fields, []string{"Dummy", "Yummy"})
+	fields, err := Fields(dummyStruct)
+	assert.NoError(t, err)
+	assert.Equal(t, fields, []string{"Dummy", "Yummy"})
 }
 
 func TestHasField_existing_field(t *testing.T) {
-    dummyStruct := TestStruct {
-        Dummy: "test",
-        Yummy: 123,
-    }
+	dummyStruct := TestStruct{
+		Dummy: "test",
+		Yummy: 123,
+	}
 
-    has, err := HasField(dummyStruct, "Dummy")
-    assert.NoError(t, err)
-    assert.True(t, has)
+	has, err := HasField(dummyStruct, "Dummy")
+	assert.NoError(t, err)
+	assert.True(t, has)
 }
 
 func TestHasField_non_existing_field(t *testing.T) {
-    dummyStruct := TestStruct {
-        Dummy: "test",
-        Yummy: 123,
-    }
+	dummyStruct := TestStruct{
+		Dummy: "test",
+		Yummy: 123,
+	}
 
-    has, err := HasField(dummyStruct, "Test")
-    assert.NoError(t, err)
-    assert.False(t, has)
+	has, err := HasField(dummyStruct, "Test")
+	assert.NoError(t, err)
+	assert.False(t, has)
 }
 
 func TestHasField_on_non_struct(t *testing.T) {
-    dummy := "abc 123"
+	dummy := "abc 123"
 
-    _, err := HasField(dummy, "Test")
-    assert.Error(t, err)
+	_, err := HasField(dummy, "Test")
+	assert.Error(t, err)
 }
 
 func TestHasField_unexported_field(t *testing.T) {
-    dummyStruct := TestStruct {
-        unexported: 7890,
-        Dummy: "test",
-        Yummy: 123,
-    }
+	dummyStruct := TestStruct{
+		unexported: 7890,
+		Dummy:      "test",
+		Yummy:      123,
+	}
 
-    has, err := HasField(dummyStruct, "unexported")
-    assert.NoError(t, err)
-    assert.False(t, has)
+	has, err := HasField(dummyStruct, "unexported")
+	assert.NoError(t, err)
+	assert.False(t, has)
 }
 
 func TestTags_on_struct(t *testing.T) {
-    dummyStruct := TestStruct {
-        Dummy: "test",
-        Yummy: 123,
-    }
+	dummyStruct := TestStruct{
+		Dummy: "test",
+		Yummy: 123,
+	}
 
-    tags, err := Tags(dummyStruct, "test")
-    assert.NoError(t, err)
-    assert.Equal(t, tags, map[string]string{
-        "Dummy": "dummytag",
-        "Yummy": "yummytag",
-    })
+	tags, err := Tags(dummyStruct, "test")
+	assert.NoError(t, err)
+	assert.Equal(t, tags, map[string]string{
+		"Dummy": "dummytag",
+		"Yummy": "yummytag",
+	})
 }
 
 func TestTags_on_non_struct(t *testing.T) {
-    dummy := "abc 123"
+	dummy := "abc 123"
 
-    _, err := Tags(dummy, "test")
-    assert.Error(t, err)
+	_, err := Tags(dummy, "test")
+	assert.Error(t, err)
 }
 
 func TestItems_on_struct(t *testing.T) {
-    dummyStruct := TestStruct {
-        Dummy: "test",
-        Yummy: 123,
-    }
+	dummyStruct := TestStruct{
+		Dummy: "test",
+		Yummy: 123,
+	}
 
-    tags, err := Items(dummyStruct)
-    assert.NoError(t, err)
-    assert.Equal(t, tags, map[string]interface{}{
-        "Dummy": "test",
-        "Yummy": 123,
-    })
+	tags, err := Items(dummyStruct)
+	assert.NoError(t, err)
+	assert.Equal(t, tags, map[string]interface{}{
+		"Dummy": "test",
+		"Yummy": 123,
+	})
 }
 
 func TestItems_on_non_struct(t *testing.T) {
-    dummy := "abc 123"
+	dummy := "abc 123"
 
-    _, err := Items(dummy)
-    assert.Error(t, err)
+	_, err := Items(dummy)
+	assert.Error(t, err)
 }
