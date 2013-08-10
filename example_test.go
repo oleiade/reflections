@@ -2,6 +2,7 @@ package reflections_test
 
 import (
     "fmt"
+    "log"
     "github.com/oleiade/reflections"
 )
 
@@ -22,6 +23,9 @@ func ExampleGetField() {
 
     for _, fieldName := range fieldsToExtract {
         value, err := reflections.GetField(s, fieldName)
+        if err != nil {
+            log.Fatal(err)
+        }
         fmt.Println(value)
     }
 }
@@ -35,9 +39,11 @@ func ExampleHasField() {
 
     // has == true
     has, _ := reflections.HasField(s, "FirstField")
+    fmt.Println(has)
 
     // has == false
-    has, _ := reflections.HasField(s, "FourthField")
+    has, _ = reflections.HasField(s, "FourthField")
+    fmt.Println(has)
 }
 
 func ExampleFields() {
@@ -53,6 +59,7 @@ func ExampleFields() {
     // Here, it's content would be equal to:
     // []string{"FirstField", "SecondField", "ThirdField"}
     fields, _ = reflections.Fields(s)
+    fmt.Println(fields)
 }
 
 func ExampleItems() {
@@ -67,6 +74,7 @@ func ExampleItems() {
     // Items will return a field name to
     // field value map
     structItems, _ = reflections.Items(s)
+    fmt.Println(structItems)
 }
 
 func ExampleTags() {
@@ -87,6 +95,7 @@ func ExampleTags() {
     //     "SecondField": "second tag",
     // }
     structTags, _ = reflections.Tags(s, "matched")
+    fmt.Println(structTags)
 }
 
 func ExampleSetField() {
@@ -98,9 +107,15 @@ func ExampleSetField() {
 
     // In order to be able to set the structure's values,
     // a pointer to it has to be passed to it.
-    _ := reflections.SetField(&s, "FirstField", "new value")
+    err := reflections.SetField(&s, "FirstField", "new value")
+    if err != nil {
+        log.Fatal(err)
+    }
 
     // If you try to set a field's value using the wrong type,
     // an error will be returned
-    err := reflection.SetField(&s, "FirstField", 123)  // err != nil
+    err = reflections.SetField(&s, "FirstField", 123)  // err != nil
+    if err != nil {
+        log.Fatal(err)
+    }
 }
