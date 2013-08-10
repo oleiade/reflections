@@ -48,3 +48,17 @@ func ExampleFields() {
     // []string{"FirstField", "SecondField", "ThirdField"}
     fields, _ = reflections.Fields(s)
 }
+
+func ExampleItems() {
+    s := MyStruct {
+        FirstField: "first value",
+        SecondField: 2,
+        ThirdField: "third value",
+    }
+
+    var structItems map[string]interface{}
+
+    // Items will return a field name to
+    // field value map
+    structItems, _ = reflections.Items(s)
+}
