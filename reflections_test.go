@@ -1,3 +1,7 @@
+// Copyright (c) 2013 Théo Crevon
+//
+// See the file LICENSE for copying permission.
+
 package reflections
 
 import (

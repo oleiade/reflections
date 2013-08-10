@@ -1,3 +1,7 @@
+// Copyright (c) 2013 Théo Crevon
+//
+// See the file LICENSE for copying permission.
+
 /*
 Package reflections provides high level abstractions above the
 reflect library.
