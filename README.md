@@ -1,7 +1,7 @@
 Reflections
 ===========
 
-Package reflections provides high level abstractions above the reflect library.
+Package reflections provides high level abstractions above the golang reflect library.
 
 Reflect library is very low-level and as can be quite complex when it comes to do simple things like accessing a structure field value, a field tag...
 
