@@ -1,4 +1,4 @@
-reflections
+Reflections
 ===========
 
 Package reflections provides high level abstractions above the reflect library.
@@ -7,6 +7,12 @@ Reflect library is very low-level and as can be quite complex when it comes to d
 
 The purpose of reflections package is to make developers life easier when it comes to introspect structures at runtime.
 It's API is freely inspired from python language (getattr, setattr, hasattr...) and provides a simplified access to structure fields and tags.
+
+*Reflections is an open source library under the MIT license. Any hackers are welcome to supply ideas, features requests, patches, pull requests and so on: see [Contribute]()*
+
+#### Documentation
+
+Documentation is available at http://godoc.org/github.com/oleiade/reflections
 
 
 ## Installation
@@ -153,10 +159,6 @@ unexported fields cannot be set, and that field type and value type have to matc
 
 * **unexported fields** cannot be accessed or set using reflections library: the golang reflect library intentionaly prohibits unexported fields values access or modifications.
 
-
-## Documentation
-
-Documentation is available at http://godoc.org/github.com/oleiade/reflections
 
 ## Contribute
 
