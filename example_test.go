@@ -82,3 +82,19 @@ func ExampleTags() {
     // }
     structTags, _ = reflections.Tags(s, "matched")
 }
+
+func ExampleSetField() {
+    s := MyStruct {
+        FirstField: "first value",
+        SecondField: 2,
+        ThirdField: "third value",
+    }
+
+    // In order to be able to set the structure's values,
+    // a pointer to it has to be passed to it.
+    _ := reflections.SetField(&s, "FirstField", "new value")
+
+    // If you try to set a field's value using the wrong type,
+    // an error will be returned
+    err := reflection.SetField(&s, "FirstField", 123)  // err != nil
+}
