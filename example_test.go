@@ -1,5 +1,9 @@
-package reflection_test
+package reflections_test
 
+import (
+    "fmt"
+    "github.com/oleiade/reflections"
+)
 
 func ExampleGetField() {
     s := MyStruct {
