@@ -33,3 +33,18 @@ func ExampleHasField() {
     // has == false
     has, _ := reflections.HasField(s, "FourthField")
 }
+
+func ExampleFields() {
+    s := MyStruct {
+        FirstField: "first value",
+        SecondField: 2,
+        ThirdField: "third value",
+    }
+
+    var fields []string
+
+    // Fields will list every structure exportable fields.
+    // Here, it's content would be equal to:
+    // []string{"FirstField", "SecondField", "ThirdField"}
+    fields, _ = reflections.Fields(s)
+}
