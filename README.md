@@ -6,7 +6,7 @@ Package reflections provides high level abstractions above the golang reflect li
 Reflect library is very low-level and can be quite complex when it comes to do simple things like accessing a structure field value, a field tag...
 
 The purpose of reflections package is to make developers life easier when it comes to introspect structures at runtime.
-It's API is freely inspired from python language (getattr, setattr, hasattr...) and provides a simplified access to structure fields and tags.
+Its API is inspired from python language (getattr, setattr, hasattr...) and provides a simplified access to structure fields and tags.
 
 *Reflections is an open source library under the MIT license. Any hackers are welcome to supply ideas, features requests, patches, pull requests and so on: see [Contribute]()*
 
