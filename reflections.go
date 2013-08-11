@@ -72,7 +72,7 @@ func HasField(obj interface{}, name string) (bool, error) {
 
 	structValue := reflect.TypeOf(obj)
 	structField, ok := structValue.FieldByName(name)
-	if !ok || !isExportableField(&structField) {
+	if !ok || !isExportableField(structField) {
 		return false, nil
 	}
 
@@ -91,7 +91,7 @@ func Fields(obj interface{}) ([]string, error) {
 	var fields []string
 	for i := 0; i < fieldsCount; i++ {
 		field := structType.Field(i)
-		if isExportableField(&field) {
+		if isExportableField(field) {
 			fields = append(fields, field.Name)
 		}
 	}
@@ -117,7 +117,7 @@ func Items(obj interface{}) (map[string]interface{}, error) {
 
 		// Make sure only exportable and addressable fields are
 		// returned by Items
-		if isExportableField(&field) {
+		if isExportableField(field) {
 			items[field.Name] = fieldValue.Interface()
 		}
 	}
@@ -139,7 +139,7 @@ func Tags(obj interface{}, key string) (map[string]string, error) {
 	for i := 0; i < fieldsCount; i++ {
 		structField := structType.Field(i)
 
-		if isExportableField(&structField) {
+		if isExportableField(structField) {
 			tags[structField.Name] = structField.Tag.Get(key)
 		}
 	}
@@ -147,14 +147,9 @@ func Tags(obj interface{}, key string) (map[string]string, error) {
 	return tags, nil
 }
 
-func isExportableField(field *reflect.StructField) bool {
-	// golang variables must start with a letter,
-	// so checking if first letter is within [a-z]
-	// is sufficient here
-	if field.Name[0] >= 97 && field.Name[0] <= 122 {
-		return false
-	}
-	return true
+func isExportableField(field reflect.StructField) bool {
+	// PkgPath is empty for exported fields.
+	return field.PkgPath == ""
 }
 
 func isStruct(obj interface{}) bool {
