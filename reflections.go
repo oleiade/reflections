@@ -17,7 +17,6 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"unsafe"
 )
 
 // GetField returns the value of the provided obj field. obj param
@@ -31,8 +30,7 @@ func GetField(obj interface{}, name string) (interface{}, error) {
 	value := val.FieldByName(name)
 
 	if !value.IsValid() {
-		errMsg := fmt.Sprintf("No such field: %s in obj", name)
-		return nil, errors.New(errMsg)
+		return nil, fmt.Errorf("No such field: %s in obj", name)
 	}
 
 	return value.Interface(), nil
@@ -47,63 +45,22 @@ func SetField(obj interface{}, name string, value interface{}) error {
 	structFieldValue := structValue.FieldByName(name)
 
 	if !structFieldValue.IsValid() {
-		errMsg := fmt.Sprintf("No such field: %s in obj", name)
-		return errors.New(errMsg)
+		return fmt.Errorf("No such field: %s in obj", name)
 	}
 
 	// If obj field value is not settable an error is thrown
 	if !structFieldValue.CanSet() {
-		errMsg := fmt.Sprintf("Cannot set %s field value", name)
-		return errors.New(errMsg)
+		return fmt.Errorf("Cannot set %s field value", name)
 	}
 
-	invalidTypeError := errors.New("Provided value type didn't match obj field type")
-
-	switch value.(type) {
-	case bool:
-		if structFieldValue.Type().Kind() != reflect.Bool {
-			return invalidTypeError
-		}
-		structFieldValue.SetBool(value.(bool))
-	case int:
-		if structFieldValue.Type().Kind() != reflect.Int64 {
-			return invalidTypeError
-		}
-		structFieldValue.SetInt(value.(int64))
-	case uint64:
-		if structFieldValue.Type().Kind() != reflect.Uint64 {
-			return invalidTypeError
-		}
-		structFieldValue.SetUint(value.(uint64))
-	case float64:
-		if structFieldValue.Type().Kind() != reflect.Float64 {
-			return invalidTypeError
-		}
-		structFieldValue.SetFloat(value.(float64))
-	case complex128:
-		if structFieldValue.Type().Kind() != reflect.Complex128 {
-			return invalidTypeError
-		}
-		structFieldValue.SetComplex(value.(complex128))
-	case string:
-		if structFieldValue.Type().Kind() != reflect.String {
-			return invalidTypeError
-		}
-		structFieldValue.SetString(value.(string))
-	case []byte:
-		if structFieldValue.Type().Kind() != reflect.Slice {
-			return invalidTypeError
-		}
-		structFieldValue.SetBytes(value.([]byte))
-	case unsafe.Pointer:
-		if structFieldValue.Type().Kind() != reflect.Ptr {
-			return invalidTypeError
-		}
-		structFieldValue.SetPointer(value.(unsafe.Pointer))
-	default:
-		return errors.New("Unknow field type")
+	structFieldType := structFieldValue.Type()
+	val := reflect.ValueOf(value)
+	if structFieldType != val.Type() {
+		invalidTypeError := errors.New("Provided value type didn't match obj field type")
+		return invalidTypeError
 	}
 
+	structFieldValue.Set(val)
 	return nil
 }
 
@@ -115,7 +72,7 @@ func HasField(obj interface{}, name string) (bool, error) {
 
 	structValue := reflect.TypeOf(obj)
 	structField, ok := structValue.FieldByName(name)
-	if !ok || !isExportableField(&structField) {
+	if !ok || !isExportableField(structField) {
 		return false, nil
 	}
 
@@ -134,7 +91,7 @@ func Fields(obj interface{}) ([]string, error) {
 	var fields []string
 	for i := 0; i < fieldsCount; i++ {
 		field := structType.Field(i)
-		if isExportableField(&field) {
+		if isExportableField(field) {
 			fields = append(fields, field.Name)
 		}
 	}
@@ -160,7 +117,7 @@ func Items(obj interface{}) (map[string]interface{}, error) {
 
 		// Make sure only exportable and addressable fields are
 		// returned by Items
-		if isExportableField(&field) {
+		if isExportableField(field) {
 			items[field.Name] = fieldValue.Interface()
 		}
 	}
@@ -182,7 +139,7 @@ func Tags(obj interface{}, key string) (map[string]string, error) {
 	for i := 0; i < fieldsCount; i++ {
 		structField := structType.Field(i)
 
-		if isExportableField(&structField) {
+		if isExportableField(structField) {
 			tags[structField.Name] = structField.Tag.Get(key)
 		}
 	}
@@ -190,14 +147,9 @@ func Tags(obj interface{}, key string) (map[string]string, error) {
 	return tags, nil
 }
 
-func isExportableField(field *reflect.StructField) bool {
-	// golang variables must start with a letter,
-	// so checking if first letter is within [a-z]
-	// is sufficient here
-	if field.Name[0] >= 97 && field.Name[0] <= 122 {
-		return false
-	}
-	return true
+func isExportableField(field reflect.StructField) bool {
+	// PkgPath is empty for exported fields.
+	return field.PkgPath == ""
 }
 
 func isStruct(obj interface{}) bool {
