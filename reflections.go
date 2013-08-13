@@ -53,6 +53,26 @@ func GetFieldKind(obj interface{}, name string) (reflect.Kind, error) {
 	return value.Type().Kind(), nil
 }
 
+// GetFieldTag returns the provided obj field tag value. obj param
+// has to be a struct type.
+func GetFieldTag(obj interface{}, fieldName, tagKey string) (string, error) {
+	if !isStruct(obj) {
+		return "", errors.New("Cannot use GetField on a non-struct interface")
+	}
+
+	structType := reflect.TypeOf(obj)
+	structField, ok := structType.FieldByName(fieldName)
+	if !ok {
+		return "", fmt.Errorf("No such field: %s in obj", fieldName)
+	}
+
+	if !isExportableField(structField) {
+		return "", errors.New("Cannot GetFieldTag on a non-exported struct field")
+	}
+
+	return structField.Tag.Get(tagKey), nil
+}
+
 // SetField sets the provided obj field with provided value. obj param has
 // to be a pointer to a struct, otherwise it will soundly fail. Provided
 // value type should match with the struct field you're trying to set.

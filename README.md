@@ -81,6 +81,26 @@ you'd wanna iterate over a struct specific fields values for example.
     }
 ```
 
+##### GetFieldTag
+
+*GetFieldTag* extracts a specific structure field tag.
+
+```go
+    s := MyStruct{}
+
+    tag, err := reflections.GetFieldTag(s, "FirstField", "matched")
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println(tag)
+
+    tag, err = reflections.GetFieldTag(s, "ThirdField", "unmatched")
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println(tag)
+```
+
 ##### HasField
 
 *HasField* asserts a field exists through structure.

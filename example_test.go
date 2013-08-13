@@ -57,6 +57,22 @@ func ExampleGetFieldKind() {
 	fmt.Println(secondFieldKind)
 }
 
+func ExampleGetFieldTag() {
+	s := MyStruct{}
+
+	tag, err := reflections.GetFieldTag(s, "FirstField", "matched")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(tag)
+
+	tag, err = reflections.GetFieldTag(s, "ThirdField", "unmatched")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(tag)
+}
+
 func ExampleHasField() {
 	s := MyStruct{
 		FirstField:  "first value",

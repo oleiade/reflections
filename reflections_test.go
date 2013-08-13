@@ -85,6 +85,42 @@ func TestGetFieldKind_non_existing_field(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func TestGetFieldTag_on_struct(t *testing.T) {
+	dummyStruct := TestStruct{}
+
+	tag, err := GetFieldTag(dummyStruct, "Dummy", "test")
+	assert.NoError(t, err)
+	assert.Equal(t, tag, "dummytag")
+
+	tag, err = GetFieldTag(dummyStruct, "Yummy", "test")
+	assert.NoError(t, err)
+	assert.Equal(t, tag, "yummytag")
+}
+
+func TestGetFieldTag_on_non_struct(t *testing.T) {
+	dummy := "abc 123"
+
+	_, err := GetFieldTag(dummy, "Dummy", "test")
+	assert.Error(t, err)
+}
+
+func TestGetFieldTag_non_existing_field(t *testing.T) {
+	dummyStruct := TestStruct{}
+
+	_, err := GetFieldTag(dummyStruct, "obladioblada", "test")
+	assert.Error(t, err)
+}
+
+func TestGetFieldTag_unexported_field(t *testing.T) {
+	dummyStruct := TestStruct{
+		unexported: 12345,
+		Dummy:      "test",
+	}
+
+	_, err := GetFieldTag(dummyStruct, "unexported", "test")
+	assert.Error(t, err)
+}
+
 func TestSetField_on_struct_with_valid_value_type(t *testing.T) {
 	dummyStruct := TestStruct{
 		Dummy: "test",
