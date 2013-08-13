@@ -30,6 +30,28 @@ func ExampleGetField() {
 	}
 }
 
+func ExampleGetFieldKind() {
+	s := MyStruct{
+		FirstField:  "first value",
+		SecondField: 2,
+		ThirdField:  "third value",
+	}
+
+	var firstFieldKind reflect.String
+	var secondFieldKind reflect.Int
+	var err error
+
+	firstFieldKind, err = GetFieldKind(s, "FirstField")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	secondFieldKind, err = GetFieldKind(s, "SecondField")
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func ExampleHasField() {
 	s := MyStruct{
 		FirstField:  "first value",

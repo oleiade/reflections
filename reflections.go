@@ -36,6 +36,23 @@ func GetField(obj interface{}, name string) (interface{}, error) {
 	return value.Interface(), nil
 }
 
+// GetFieldKind returns the kind of the provided obj field. obj param
+// has to be a struct type.
+func GetFieldKind(obj interface{}, name string) (reflect.Kind, error) {
+	if !isStruct(obj) {
+		return reflect.Invalid, errors.New("Cannot use GetField on a non-struct interface")
+	}
+
+	val := reflect.ValueOf(obj)
+	value := val.FieldByName(name)
+
+	if !value.IsValid() {
+		return reflect.Invalid, fmt.Errorf("No such field: %s in obj", name)
+	}
+
+	return value.Type().Kind(), nil
+}
+
 // SetField sets the provided obj field with provided value. obj param has
 // to be a pointer to a struct, otherwise it will soundly fail. Provided
 // value type should match with the struct field you're trying to set.

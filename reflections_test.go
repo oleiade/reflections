@@ -7,6 +7,7 @@ package reflections
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"reflect"
 )
 
 type TestStruct struct {
@@ -50,6 +51,38 @@ func TestGetField_unexported_field(t *testing.T) {
 	assert.Panics(t, func() {
 		GetField(dummyStruct, "unexported")
 	})
+}
+
+func TestGetFieldKind_on_struct(t *testing.T) {
+	dummyStruct := TestStruct{
+		Dummy: "test",
+		Yummy: 123,
+	}
+
+	kind, err := GetFieldKind(dummyStruct, "Dummy")
+	assert.NoError(t, err)
+	assert.Equal(t, kind, reflect.String)
+
+	kind, err = GetFieldKind(dummyStruct, "Yummy")
+	assert.NoError(t, err)
+	assert.Equal(t, kind, reflect.Int)
+}
+
+func TestGetFieldKind_on_non_struct(t *testing.T) {
+	dummy := "abc 123"
+
+	_, err := GetFieldKind(dummy, "Dummy")
+	assert.Error(t, err)
+}
+
+func TestGetFieldKind_non_existing_field(t *testing.T) {
+	dummyStruct := TestStruct{
+		Dummy: "test",
+		Yummy: 123,
+	}
+
+	_, err := GetFieldKind(dummyStruct, "obladioblada")
+	assert.Error(t, err)
 }
 
 func TestSetField_on_struct_with_valid_value_type(t *testing.T) {

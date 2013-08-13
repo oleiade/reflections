@@ -55,6 +55,32 @@ you'd wanna iterate over a struct specific fields values for example.
     }
 ```
 
+##### GetFieldKind
+
+*GetFieldKind* returns the [reflect.Kind](http://golang.org/src/pkg/reflect/type.go?s=6916:6930#L189) of a structure field. It can be used to operate type assertion over a structure fields at runtime.
+
+```go
+    s := MyStruct{
+        FirstField:  "first value",
+        SecondField: 2,
+        ThirdField:  "third value",
+    }
+
+    var firstFieldKind reflect.String
+    var secondFieldKind reflect.Int
+    var err error
+
+    firstFieldKind, err = GetFieldKind(s, "FirstField")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    secondFieldKind, err = GetFieldKind(s, "SecondField")
+    if err != nil {
+        log.Fatal(err)
+    }
+```
+
 ##### HasField
 
 *HasField* asserts a field exists through structure.
