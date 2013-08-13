@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/oleiade/reflections"
 	"log"
+	"reflect"
 )
 
 type MyStruct struct {
@@ -37,16 +38,18 @@ func ExampleGetFieldKind() {
 		ThirdField:  "third value",
 	}
 
-	var firstFieldKind reflect.String
-	var secondFieldKind reflect.Int
+	var firstFieldKind reflect.Kind
+	var secondFieldKind reflect.Kind
 	var err error
 
-	firstFieldKind, err = GetFieldKind(s, "FirstField")
+	// GetFieldKind will return reflect.String
+	firstFieldKind, err = reflections.GetFieldKind(s, "FirstField")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	secondFieldKind, err = GetFieldKind(s, "SecondField")
+	// GetFieldKind will return reflect.Int
+	secondFieldKind, err = reflections.GetFieldKind(s, "SecondField")
 	if err != nil {
 		log.Fatal(err)
 	}
