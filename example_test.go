@@ -47,12 +47,14 @@ func ExampleGetFieldKind() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(firstFieldKind)
 
 	// GetFieldKind will return reflect.Int
 	secondFieldKind, err = reflections.GetFieldKind(s, "SecondField")
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(secondFieldKind)
 }
 
 func ExampleHasField() {
