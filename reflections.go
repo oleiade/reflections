@@ -22,55 +22,56 @@ import (
 // GetField returns the value of the provided obj field. obj param
 // has to be a struct type.
 func GetField(obj interface{}, name string) (interface{}, error) {
-	if !isStruct(obj) {
+	if !hasValidType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
 		return nil, errors.New("Cannot use GetField on a non-struct interface")
 	}
 
-	val := reflect.ValueOf(obj)
-	value := val.FieldByName(name)
-
-	if !value.IsValid() {
+	objValue := reflectValue(obj)
+	field := objValue.FieldByName(name)
+	if !field.IsValid() {
 		return nil, fmt.Errorf("No such field: %s in obj", name)
 	}
 
-	return value.Interface(), nil
+	return field.Interface(), nil
 }
 
 // GetFieldKind returns the kind of the provided obj field. obj param
 // has to be a struct type.
 func GetFieldKind(obj interface{}, name string) (reflect.Kind, error) {
-	if !isStruct(obj) {
+	if !hasValidType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
 		return reflect.Invalid, errors.New("Cannot use GetField on a non-struct interface")
 	}
 
-	val := reflect.ValueOf(obj)
-	value := val.FieldByName(name)
+	objValue := reflectValue(obj)
+	field := objValue.FieldByName(name)
 
-	if !value.IsValid() {
+	if !field.IsValid() {
 		return reflect.Invalid, fmt.Errorf("No such field: %s in obj", name)
 	}
 
-	return value.Type().Kind(), nil
+	return field.Type().Kind(), nil
 }
 
 // GetFieldTag returns the provided obj field tag value. obj param
 // has to be a struct type.
 func GetFieldTag(obj interface{}, fieldName, tagKey string) (string, error) {
-	if !isStruct(obj) {
+	if !hasValidType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
 		return "", errors.New("Cannot use GetField on a non-struct interface")
 	}
 
-	structType := reflect.TypeOf(obj)
-	structField, ok := structType.FieldByName(fieldName)
+	objValue := reflectValue(obj)
+	objType := objValue.Type()
+	
+	field, ok := objType.FieldByName(fieldName)
 	if !ok {
 		return "", fmt.Errorf("No such field: %s in obj", fieldName)
 	}
 
-	if !isExportableField(structField) {
+	if !isExportableField(field) {
 		return "", errors.New("Cannot GetFieldTag on a non-exported struct field")
 	}
 
-	return structField.Tag.Get(tagKey), nil
+	return field.Tag.Get(tagKey), nil
 }
 
 // SetField sets the provided obj field with provided value. obj param has
@@ -103,13 +104,14 @@ func SetField(obj interface{}, name string, value interface{}) error {
 
 // HasField checks if the provided field name is part of a struct.
 func HasField(obj interface{}, name string) (bool, error) {
-	if !isStruct(obj) {
-		return false, errors.New("Cannot use HasField on a non-struct interface")
+	if !hasValidType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
+		return false, errors.New("Cannot use GetField on a non-struct interface")
 	}
 
-	structValue := reflect.TypeOf(obj)
-	structField, ok := structValue.FieldByName(name)
-	if !ok || !isExportableField(structField) {
+	objValue := reflectValue(obj)
+	objType := objValue.Type()
+	field, ok := objType.FieldByName(name)
+	if !ok || !isExportableField(field) {
 		return false, nil
 	}
 
@@ -118,16 +120,17 @@ func HasField(obj interface{}, name string) (bool, error) {
 
 // Fields returns the struct fields names list
 func Fields(obj interface{}) ([]string, error) {
-	if !isStruct(obj) {
-		return nil, errors.New("Cannot use Fields on a non-struct interface")
+	if !hasValidType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
+		return nil, errors.New("Cannot use GetField on a non-struct interface")
 	}
 
-	structType := reflect.TypeOf(obj)
-	fieldsCount := structType.NumField()
+	objValue := reflectValue(obj)
+	objType := objValue.Type()
+	fieldsCount := objType.NumField()
 
 	var fields []string
 	for i := 0; i < fieldsCount; i++ {
-		field := structType.Field(i)
+		field := objType.Field(i)
 		if isExportableField(field) {
 			fields = append(fields, field.Name)
 		}
@@ -138,19 +141,19 @@ func Fields(obj interface{}) ([]string, error) {
 
 // Items returns the field - value struct pairs as a map
 func Items(obj interface{}) (map[string]interface{}, error) {
-	if !isStruct(obj) {
-		return nil, errors.New("Cannot use Items on a non-struct interface")
+	if !hasValidType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
+		return nil, errors.New("Cannot use GetField on a non-struct interface")
 	}
 
-	structType := reflect.TypeOf(obj)
-	structValue := reflect.ValueOf(obj)
-	fieldsCount := structType.NumField()
+	objValue := reflectValue(obj)
+	objType := objValue.Type()
+	fieldsCount := objType.NumField()
 
 	items := make(map[string]interface{})
 
 	for i := 0; i < fieldsCount; i++ {
-		field := structType.Field(i)
-		fieldValue := structValue.Field(i)
+		field := objType.Field(i)
+		fieldValue := objValue.Field(i)
 
 		// Make sure only exportable and addressable fields are
 		// returned by Items
@@ -164,17 +167,18 @@ func Items(obj interface{}) (map[string]interface{}, error) {
 
 // Tags lists the struct tag fields
 func Tags(obj interface{}, key string) (map[string]string, error) {
-	if !isStruct(obj) {
-		return nil, errors.New("Cannot use Tags on a non-struct interface")
+	if !hasValidType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
+		return nil, errors.New("Cannot use GetField on a non-struct interface")
 	}
 
-	structType := reflect.TypeOf(obj)
-	fieldsCount := structType.NumField()
+	objValue := reflectValue(obj)
+	objType := objValue.Type()
+	fieldsCount := objType.NumField()
 
 	tags := make(map[string]string)
 
 	for i := 0; i < fieldsCount; i++ {
-		structField := structType.Field(i)
+		structField := objType.Field(i)
 
 		if isExportableField(structField) {
 			tags[structField.Name] = structField.Tag.Get(key)
@@ -184,9 +188,31 @@ func Tags(obj interface{}, key string) (map[string]string, error) {
 	return tags, nil
 }
 
+func reflectValue(obj interface{}) reflect.Value {
+    var val reflect.Value
+
+    if reflect.TypeOf(obj).Kind() == reflect.Ptr {
+        val = reflect.ValueOf(obj).Elem()
+    } else {
+        val = reflect.ValueOf(obj)
+    }
+
+    return val
+}
+
 func isExportableField(field reflect.StructField) bool {
 	// PkgPath is empty for exported fields.
 	return field.PkgPath == ""
+}
+
+func hasValidType(obj interface{}, types []reflect.Kind) bool{
+	for _, t := range types {
+		if reflect.TypeOf(obj).Kind() == t {
+			return true
+		}
+	}
+
+	return false
 }
 
 func isStruct(obj interface{}) bool {
