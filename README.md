@@ -38,7 +38,8 @@ Documentation is available at http://godoc.org/github.com/oleiade/reflections
 ##### GetField
 
 *GetField* returns the content of a structure field. It can be very usefull when
-you'd wanna iterate over a struct specific fields values for example.
+you'd wanna iterate over a struct specific fields values for example. You can whether
+provide *GetField* a structure or a pointer to structure as first argument.
 
 ```go
     s := MyStruct {
@@ -57,7 +58,7 @@ you'd wanna iterate over a struct specific fields values for example.
 
 ##### GetFieldKind
 
-*GetFieldKind* returns the [reflect.Kind](http://golang.org/src/pkg/reflect/type.go?s=6916:6930#L189) of a structure field. It can be used to operate type assertion over a structure fields at runtime.
+*GetFieldKind* returns the [reflect.Kind](http://golang.org/src/pkg/reflect/type.go?s=6916:6930#L189) of a structure field. It can be used to operate type assertion over a structure fields at runtime.  You can whether provide *GetFieldKind* a structure or a pointer to structure as first argument.
 
 ```go
     s := MyStruct{
@@ -83,7 +84,8 @@ you'd wanna iterate over a struct specific fields values for example.
 
 ##### GetFieldTag
 
-*GetFieldTag* extracts a specific structure field tag.
+*GetFieldTag* extracts a specific structure field tag. You can whether provide *GetFieldTag* a structure or a pointer to structure as first argument.
+
 
 ```go
     s := MyStruct{}
@@ -103,7 +105,8 @@ you'd wanna iterate over a struct specific fields values for example.
 
 ##### HasField
 
-*HasField* asserts a field exists through structure.
+*HasField* asserts a field exists through structure. You can whether provide *HasField* a structure or a pointer to structure as first argument.
+
 
 ```go
     s := MyStruct {
@@ -121,7 +124,8 @@ you'd wanna iterate over a struct specific fields values for example.
 
 ##### Fields
 
-*Fields* returns the list of a structure field names, so you can access or modify them later on.
+*Fields* returns the list of a structure field names, so you can access or modify them later on. You can whether provide *Fields* a structure or a pointer to structure as first argument.
+
 
 ```go
     s := MyStruct {
@@ -140,7 +144,8 @@ you'd wanna iterate over a struct specific fields values for example.
 
 ##### Items
 
-*Items* returns the structure's field name to values map.
+*Items* returns the structure's field name to values map. You can whether provide *Items* a structure or a pointer to structure as first argument.
+
 
 ```go
     s := MyStruct {
@@ -158,7 +163,8 @@ you'd wanna iterate over a struct specific fields values for example.
 
 ##### Tags
 
-*Tags* returns the structure's fields tag with the provided key.
+*Tags* returns the structure's fields tag with the provided key. You can whether provide *Tags* a structure or a pointer to structure as first argument.
+
 
 ```go
     s := MyStruct {
