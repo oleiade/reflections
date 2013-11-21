@@ -221,3 +221,7 @@ unexported fields cannot be set, and that field type and value type have to matc
 
 [the repository](http://github.com/oleiade/reflections)
 [AUTHORS](https://github.com/oleiade/reflections/blob/master/AUTHORS.md)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/oleiade/reflections/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
