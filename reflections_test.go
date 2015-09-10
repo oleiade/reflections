@@ -6,8 +6,8 @@ package reflections
 
 import (
 	"github.com/stretchr/testify/assert"
-	"testing"
 	"reflect"
+	"testing"
 )
 
 type TestStruct struct {
@@ -60,6 +60,53 @@ func TestGetField_unexported_field(t *testing.T) {
 
 	assert.Panics(t, func() {
 		GetField(dummyStruct, "unexported")
+	})
+}
+
+func TestGetFields_on_struct(t *testing.T) {
+	dummyStruct := TestStruct{
+		Dummy: "test",
+	}
+
+	value, err := GetFields(dummyStruct, []string{"Dummy"})
+	assert.NoError(t, err)
+	assert.Equal(t, value, map[string]interface{}{"Dummy": "test"})
+}
+
+func TestGetFields_on_struct_pointer(t *testing.T) {
+	dummyStruct := &TestStruct{
+		Dummy: "test",
+	}
+
+	value, err := GetFields(dummyStruct, []string{"Dummy"})
+	assert.NoError(t, err)
+	assert.Equal(t, value, map[string]interface{}{"Dummy": "test"})
+}
+
+func TestGetFields_on_non_struct(t *testing.T) {
+	dummy := "abc 123"
+
+	_, err := GetFields(dummy, []string{"Dummy"})
+	assert.Error(t, err)
+}
+
+func TestGetFields_non_existing_field(t *testing.T) {
+	dummyStruct := TestStruct{
+		Dummy: "test",
+	}
+
+	_, err := GetFields(dummyStruct, []string{"obladioblada"})
+	assert.Error(t, err)
+}
+
+func TestGetFields_unexported_field(t *testing.T) {
+	dummyStruct := TestStruct{
+		unexported: 12345,
+		Dummy:      "test",
+	}
+
+	assert.Panics(t, func() {
+		GetFields(dummyStruct, []string{"unexported"})
 	})
 }
 
