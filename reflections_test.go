@@ -6,14 +6,24 @@ package reflections
 
 import (
 	"github.com/stretchr/testify/assert"
-	"testing"
 	"reflect"
+	"testing"
 )
 
 type TestStruct struct {
 	unexported uint64
 	Dummy      string `test:"dummytag"`
 	Yummy      int    `test:"yummytag"`
+}
+
+type Address struct {
+	Street string `tag:"be"`
+	Number int    `tag:"bi"`
+}
+
+type Person struct {
+	Name string `tag:"bu"`
+	Address
 }
 
 func TestGetField_on_struct(t *testing.T) {
@@ -362,4 +372,58 @@ func TestItems_on_non_struct(t *testing.T) {
 
 	_, err := Items(dummy)
 	assert.Error(t, err)
+}
+
+func TestItems_deep(t *testing.T) {
+	p := Person{}
+	p.Name = "name!"
+	p.Street = "street?"
+	p.Number = 17
+
+	items, err := Items(p)
+	assert.NoError(t, err)
+	itemsDeep, err := ItemsDeep(p)
+	assert.NoError(t, err)
+
+	assert.Equal(t, len(items), 2)
+	assert.Equal(t, len(itemsDeep), 3)
+	assert.Equal(t, itemsDeep["Name"], "name!")
+	assert.Equal(t, itemsDeep["Street"], "street?")
+	assert.Equal(t, itemsDeep["Number"], 17)
+}
+
+func TestTags_deep(t *testing.T) {
+	p := Person{}
+	p.Name = "name!"
+	p.Street = "street?"
+	p.Number = 17
+
+	tags, err := Tags(p, "tag")
+	assert.NoError(t, err)
+	tagsDeep, err := TagsDeep(p, "tag")
+	assert.NoError(t, err)
+
+	assert.Equal(t, len(tags), 2)
+	assert.Equal(t, len(tagsDeep), 3)
+	assert.Equal(t, tagsDeep["Name"], "bu")
+	assert.Equal(t, tagsDeep["Street"], "be")
+	assert.Equal(t, tagsDeep["Number"], "bi")
+}
+
+func TestFields_deep(t *testing.T) {
+	p := Person{}
+	p.Name = "name!"
+	p.Street = "street?"
+	p.Number = 17
+
+	fields, err := Fields(p)
+	assert.NoError(t, err)
+	fieldsDeep, err := FieldsDeep(p)
+	assert.NoError(t, err)
+
+	assert.Equal(t, len(fields), 2)
+	assert.Equal(t, len(fieldsDeep), 3)
+	assert.Equal(t, fieldsDeep[0], "Name")
+	assert.Equal(t, fieldsDeep[1], "Street")
+	assert.Equal(t, fieldsDeep[2], "Number")
 }
