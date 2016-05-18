@@ -143,15 +143,17 @@ func fields(obj interface{}, deep bool) ([]string, error) {
 	var allFields []string
 	for i := 0; i < fieldsCount; i++ {
 		field := objType.Field(i)
-		if deep && field.Anonymous {
-			fieldValue := objValue.Field(i)
-			subFields, err := fields(fieldValue.Interface(), deep)
-			if err != nil {
-				return nil, fmt.Errorf("Cannot get fields in %s: %s", field.Name, err.Error())
+		if isExportableField(field) {
+			if deep && field.Anonymous {
+				fieldValue := objValue.Field(i)
+				subFields, err := fields(fieldValue.Interface(), deep)
+				if err != nil {
+					return nil, fmt.Errorf("Cannot get fields in %s: %s", field.Name, err.Error())
+				}
+				allFields = append(allFields, subFields...)
+			} else {
+				allFields = append(allFields, field.Name)
 			}
-			allFields = append(allFields, subFields...)
-		} else if isExportableField(field) {
-			allFields = append(allFields, field.Name)
 		}
 	}
 
@@ -184,16 +186,18 @@ func items(obj interface{}, deep bool) (map[string]interface{}, error) {
 	for i := 0; i < fieldsCount; i++ {
 		field := objType.Field(i)
 		fieldValue := objValue.Field(i)
-		if deep && field.Anonymous {
-			if m, err := items(fieldValue.Interface(), deep); err == nil {
-				for k, v := range m {
-					allItems[k] = v
+		if isExportableField(field) {
+			if deep && field.Anonymous {
+				if m, err := items(fieldValue.Interface(), deep); err == nil {
+					for k, v := range m {
+						allItems[k] = v
+					}
+				} else {
+					return nil, fmt.Errorf("Cannot get items in %s: %s", field.Name, err.Error())
 				}
 			} else {
-				return nil, fmt.Errorf("Cannot get items in %s: %s", field.Name, err.Error())
+				allItems[field.Name] = fieldValue.Interface()
 			}
-		} else if isExportableField(field) {
-			allItems[field.Name] = fieldValue.Interface()
 		}
 	}
 
@@ -225,17 +229,19 @@ func tags(obj interface{}, key string, deep bool) (map[string]string, error) {
 
 	for i := 0; i < fieldsCount; i++ {
 		structField := objType.Field(i)
-		if deep && structField.Anonymous {
-			fieldValue := objValue.Field(i)
-			if m, err := tags(fieldValue.Interface(), key, deep); err == nil {
-				for k, v := range m {
-					allTags[k] = v
+		if isExportableField(structField) {
+			if deep && structField.Anonymous {
+				fieldValue := objValue.Field(i)
+				if m, err := tags(fieldValue.Interface(), key, deep); err == nil {
+					for k, v := range m {
+						allTags[k] = v
+					}
+				} else {
+					return nil, fmt.Errorf("Cannot get items in %s: %s", structField.Name, err.Error())
 				}
 			} else {
-				return nil, fmt.Errorf("Cannot get items in %s: %s", structField.Name, err.Error())
+				allTags[structField.Name] = structField.Tag.Get(key)
 			}
-		} else if isExportableField(structField) {
-			allTags[structField.Name] = structField.Tag.Get(key)
 		}
 	}
 

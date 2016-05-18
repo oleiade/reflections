@@ -21,9 +21,12 @@ type Address struct {
 	Number int    `tag:"bi"`
 }
 
+type unexportedStruct struct{}
+
 type Person struct {
 	Name string `tag:"bu"`
 	Address
+	unexportedStruct
 }
 
 func TestGetField_on_struct(t *testing.T) {
