@@ -52,6 +52,23 @@ func GetFieldKind(obj interface{}, name string) (reflect.Kind, error) {
 	return field.Type().Kind(), nil
 }
 
+// GetFieldType returns the kind of the provided obj field. obj can whether
+// be a structure or pointer to structure.
+func GetFieldType(obj interface{}, name string) (string, error) {
+	if !hasValidType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
+		return "", errors.New("Cannot use GetField on a non-struct interface")
+	}
+
+	objValue := reflectValue(obj)
+	field := objValue.FieldByName(name)
+
+	if !field.IsValid() {
+		return "", fmt.Errorf("No such field: %s in obj", name)
+	}
+
+	return field.Type().String(), nil
+}
+
 // GetFieldTag returns the provided obj field tag value. obj can whether
 // be a structure or pointer to structure.
 func GetFieldTag(obj interface{}, fieldName, tagKey string) (string, error) {

@@ -82,6 +82,32 @@ provide *GetField* a structure or a pointer to structure as first argument.
     }
 ```
 
+##### GetFieldType
+
+*GetFieldType* returns the string literal of a structure field type. It can be used to operate type assertion over a structure fields at runtime.  You can whether provide *GetFieldType* a structure or a pointer to structure as first argument.
+
+```go
+    s := MyStruct{
+        FirstField:  "first value",
+        SecondField: 2,
+        ThirdField:  "third value",
+    }
+
+    var firstFieldKind string
+    var secondFieldKind string
+    var err error
+
+    firstFieldKind, err = GetFieldType(s, "FirstField")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    secondFieldKind, err = GetFieldType(s, "SecondField")
+    if err != nil {
+        log.Fatal(err)
+    }
+```
+
 ##### GetFieldTag
 
 *GetFieldTag* extracts a specific structure field tag. You can whether provide *GetFieldTag* a structure or a pointer to structure as first argument.
@@ -224,4 +250,3 @@ unexported fields cannot be set, and that field type and value type have to matc
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/oleiade/reflections/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
