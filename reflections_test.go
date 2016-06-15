@@ -5,9 +5,10 @@
 package reflections
 
 import (
-	"github.com/stretchr/testify/assert"
-	"testing"
 	"reflect"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type TestStruct struct {
@@ -107,6 +108,53 @@ func TestGetFieldKind_non_existing_field(t *testing.T) {
 	}
 
 	_, err := GetFieldKind(dummyStruct, "obladioblada")
+	assert.Error(t, err)
+}
+
+func TestGetFieldType_on_struct(t *testing.T) {
+	dummyStruct := TestStruct{
+		Dummy: "test",
+		Yummy: 123,
+	}
+
+	typeString, err := GetFieldType(dummyStruct, "Dummy")
+	assert.NoError(t, err)
+	assert.Equal(t, typeString, "string")
+
+	typeString, err = GetFieldType(dummyStruct, "Yummy")
+	assert.NoError(t, err)
+	assert.Equal(t, typeString, "int")
+}
+
+func TestGetFieldType_on_struct_pointer(t *testing.T) {
+	dummyStruct := &TestStruct{
+		Dummy: "test",
+		Yummy: 123,
+	}
+
+	typeString, err := GetFieldType(dummyStruct, "Dummy")
+	assert.NoError(t, err)
+	assert.Equal(t, typeString, "string")
+
+	typeString, err = GetFieldType(dummyStruct, "Yummy")
+	assert.NoError(t, err)
+	assert.Equal(t, typeString, "int")
+}
+
+func TestGetFieldType_on_non_struct(t *testing.T) {
+	dummy := "abc 123"
+
+	_, err := GetFieldType(dummy, "Dummy")
+	assert.Error(t, err)
+}
+
+func TestGetFieldType_non_existing_field(t *testing.T) {
+	dummyStruct := TestStruct{
+		Dummy: "test",
+		Yummy: 123,
+	}
+
+	_, err := GetFieldType(dummyStruct, "obladioblada")
 	assert.Error(t, err)
 }
 

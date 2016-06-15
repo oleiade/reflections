@@ -52,6 +52,23 @@ func GetFieldKind(obj interface{}, name string) (reflect.Kind, error) {
 	return field.Type().Kind(), nil
 }
 
+// GetFieldType returns the kind of the provided obj field. obj can whether
+// be a structure or pointer to structure.
+func GetFieldType(obj interface{}, name string) (string, error) {
+	if !hasValidType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
+		return "", errors.New("Cannot use GetField on a non-struct interface")
+	}
+
+	objValue := reflectValue(obj)
+	field := objValue.FieldByName(name)
+
+	if !field.IsValid() {
+		return "", fmt.Errorf("No such field: %s in obj", name)
+	}
+
+	return field.Type().String(), nil
+}
+
 // GetFieldTag returns the provided obj field tag value. obj can whether
 // be a structure or pointer to structure.
 func GetFieldTag(obj interface{}, fieldName, tagKey string) (string, error) {
@@ -61,7 +78,7 @@ func GetFieldTag(obj interface{}, fieldName, tagKey string) (string, error) {
 
 	objValue := reflectValue(obj)
 	objType := objValue.Type()
-	
+
 	field, ok := objType.FieldByName(fieldName)
 	if !ok {
 		return "", fmt.Errorf("No such field: %s in obj", fieldName)
@@ -193,15 +210,15 @@ func Tags(obj interface{}, key string) (map[string]string, error) {
 }
 
 func reflectValue(obj interface{}) reflect.Value {
-    var val reflect.Value
+	var val reflect.Value
 
-    if reflect.TypeOf(obj).Kind() == reflect.Ptr {
-        val = reflect.ValueOf(obj).Elem()
-    } else {
-        val = reflect.ValueOf(obj)
-    }
+	if reflect.TypeOf(obj).Kind() == reflect.Ptr {
+		val = reflect.ValueOf(obj).Elem()
+	} else {
+		val = reflect.ValueOf(obj)
+	}
 
-    return val
+	return val
 }
 
 func isExportableField(field reflect.StructField) bool {
@@ -209,7 +226,7 @@ func isExportableField(field reflect.StructField) bool {
 	return field.PkgPath == ""
 }
 
-func hasValidType(obj interface{}, types []reflect.Kind) bool{
+func hasValidType(obj interface{}, types []reflect.Kind) bool {
 	for _, t := range types {
 		if reflect.TypeOf(obj).Kind() == t {
 			return true
