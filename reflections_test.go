@@ -16,19 +16,6 @@ type TestStruct struct {
 	Yummy      int    `test:"yummytag"`
 }
 
-type Address struct {
-	Street string `tag:"be"`
-	Number int    `tag:"bi"`
-}
-
-type unexportedStruct struct{}
-
-type Person struct {
-	Name string `tag:"bu"`
-	Address
-	unexportedStruct
-}
-
 func TestGetField_on_struct(t *testing.T) {
 	dummyStruct := TestStruct{
 		Dummy: "test",
@@ -378,6 +365,19 @@ func TestItems_on_non_struct(t *testing.T) {
 }
 
 func TestItems_deep(t *testing.T) {
+	type Address struct {
+		Street string `tag:"be"`
+		Number int    `tag:"bi"`
+	}
+
+	type unexportedStruct struct{}
+
+	type Person struct {
+		Name string `tag:"bu"`
+		Address
+		unexportedStruct
+	}
+
 	p := Person{}
 	p.Name = "John"
 	p.Street = "Decumanus maximus"
@@ -396,6 +396,19 @@ func TestItems_deep(t *testing.T) {
 }
 
 func TestTags_deep(t *testing.T) {
+	type Address struct {
+		Street string `tag:"be"`
+		Number int    `tag:"bi"`
+	}
+
+	type unexportedStruct struct{}
+
+	type Person struct {
+		Name string `tag:"bu"`
+		Address
+		unexportedStruct
+	}
+
 	p := Person{}
 	p.Name = "John"
 	p.Street = "Decumanus maximus"
@@ -414,6 +427,19 @@ func TestTags_deep(t *testing.T) {
 }
 
 func TestFields_deep(t *testing.T) {
+	type Address struct {
+		Street string `tag:"be"`
+		Number int    `tag:"bi"`
+	}
+
+	type unexportedStruct struct{}
+
+	type Person struct {
+		Name string `tag:"bu"`
+		Address
+		unexportedStruct
+	}
+
 	p := Person{}
 	p.Name = "John"
 	p.Street = "street?"
