@@ -379,8 +379,8 @@ func TestItems_on_non_struct(t *testing.T) {
 
 func TestItems_deep(t *testing.T) {
 	p := Person{}
-	p.Name = "name!"
-	p.Street = "street?"
+	p.Name = "John"
+	p.Street = "Decumanus maximus"
 	p.Number = 17
 
 	items, err := Items(p)
@@ -390,15 +390,15 @@ func TestItems_deep(t *testing.T) {
 
 	assert.Equal(t, len(items), 2)
 	assert.Equal(t, len(itemsDeep), 3)
-	assert.Equal(t, itemsDeep["Name"], "name!")
-	assert.Equal(t, itemsDeep["Street"], "street?")
+	assert.Equal(t, itemsDeep["Name"], "John")
+	assert.Equal(t, itemsDeep["Street"], "Decumanus maximus")
 	assert.Equal(t, itemsDeep["Number"], 17)
 }
 
 func TestTags_deep(t *testing.T) {
 	p := Person{}
-	p.Name = "name!"
-	p.Street = "street?"
+	p.Name = "John"
+	p.Street = "Decumanus maximus"
 	p.Number = 17
 
 	tags, err := Tags(p, "tag")
@@ -415,7 +415,7 @@ func TestTags_deep(t *testing.T) {
 
 func TestFields_deep(t *testing.T) {
 	p := Person{}
-	p.Name = "name!"
+	p.Name = "John"
 	p.Street = "street?"
 	p.Number = 17
 
