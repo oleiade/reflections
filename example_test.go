@@ -8,9 +8,14 @@ import (
 )
 
 type MyStruct struct {
+	MyEmbeddedStruct
 	FirstField  string `matched:"first tag"`
 	SecondField int    `matched:"second tag"`
 	ThirdField  string `unmatched:"third tag"`
+}
+
+type MyEmbeddedStruct struct {
+	EmbeddedField string
 }
 
 func ExampleGetField() {
@@ -117,6 +122,25 @@ func ExampleItems() {
 	// Items will return a field name to
 	// field value map
 	structItems, _ = reflections.Items(s)
+	fmt.Println(structItems)
+}
+
+func ExampleItemsDeep() {
+	s := MyStruct{
+		FirstField:  "first value",
+		SecondField: 2,
+		ThirdField:  "third value",
+		MyEmbeddedStruct: MyEmbeddedStruct{
+			EmbeddedField: "embedded value",
+		},
+	}
+
+	var structItems map[string]interface{}
+
+	// ItemsDeep will return a field name to
+	// field value map, including fields from
+	// anonymous embedded structs
+	structItems, _ = reflections.ItemsDeep(s)
 	fmt.Println(structItems)
 }
 
