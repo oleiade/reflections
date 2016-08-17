@@ -20,14 +20,14 @@ Documentation is available at http://godoc.org/github.com/oleiade/reflections
 #### Into the gopath
 
 ```
-    go get github.com/oleiade/reflections
+    go get gopkg.in/oleiade/reflections.v1
 ```
 
 #### Import it in your code
 
 ```go
     import (
-        "github.com/oleiade/reflections"
+        "gopkg.in/oleiade/reflections.v1"
     )
 ```
 
