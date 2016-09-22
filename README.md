@@ -38,7 +38,7 @@ Documentation is available at http://godoc.org/github.com/oleiade/reflections
 ##### GetField
 
 *GetField* returns the content of a structure field. It can be very usefull when
-you'd wanna iterate over a struct specific fields values for example. You can whether
+you'd wanna iterate over a struct specific fields values for example. You can
 provide *GetField* a structure or a pointer to structure as first argument.
 
 ```go
