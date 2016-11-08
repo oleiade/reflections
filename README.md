@@ -230,7 +230,7 @@ unexported fields cannot be set, and that field type and value type have to matc
 
     // If you try to set a field's value using the wrong type,
     // an error will be returned
-    err := reflection.SetField(&s, "FirstField", 123)  // err != nil
+    err := reflections.SetField(&s, "FirstField", 123)  // err != nil
 ```
 
 ## Important notes
