@@ -17,6 +17,13 @@ type TestStruct struct {
 	Yummy      int    `test:"yummytag"`
 }
 
+type TestStructMulti struct {
+	unexported uint64
+	Dummy      string `test:"dummytag,option1"`
+	Yummy      int    `test:"yummytag"`
+	Tummy      int
+}
+
 func TestGetField_on_struct(t *testing.T) {
 	dummyStruct := TestStruct{
 		Dummy: "test",
@@ -374,6 +381,41 @@ func TestTags_on_non_struct(t *testing.T) {
 	dummy := "abc 123"
 
 	_, err := Tags(dummy, "test")
+	assert.Error(t, err)
+}
+
+func TestTagMap_on_struct(t *testing.T) {
+	dummyStruct := TestStructMulti{
+		Dummy: "test",
+		Yummy: 123,
+	}
+
+	tags, err := TagMap(dummyStruct, "test")
+	assert.NoError(t, err)
+	assert.Equal(t, tags, map[string]string{
+		"dummytag": "Dummy",
+		"yummytag": "Yummy",
+	})
+}
+
+func TestTagMap_on_struct_pointer(t *testing.T) {
+	dummyStruct := &TestStructMulti{
+		Dummy: "test",
+		Yummy: 123,
+	}
+
+	tags, err := TagMap(dummyStruct, "test")
+	assert.NoError(t, err)
+	assert.Equal(t, tags, map[string]string{
+		"dummytag": "Dummy",
+		"yummytag": "Yummy",
+	})
+}
+
+func TestTagMap_on_non_struct(t *testing.T) {
+	dummy := "abc 123"
+
+	_, err := TagMap(dummy, "test")
 	assert.Error(t, err)
 }
 

@@ -17,6 +17,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 // GetField returns the value of the provided obj field. obj can whether
@@ -221,6 +222,11 @@ func items(obj interface{}, deep bool) (map[string]interface{}, error) {
 	return allItems, nil
 }
 
+// TagMap returns a map of first tag of type `key` to field name.
+func TagMap(obj interface{}, key string) (map[string]string, error) {
+	return tagMap(obj, key)
+}
+
 // Tags lists the struct tag fields. obj can whether
 // be a structure or pointer to structure.
 func Tags(obj interface{}, key string) (map[string]string, error) {
@@ -263,6 +269,39 @@ func tags(obj interface{}, key string, deep bool) (map[string]string, error) {
 	}
 
 	return allTags, nil
+}
+
+func tagMap(obj interface{}, key string) (map[string]string, error) {
+	if !hasValidType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
+		return nil, errors.New("Cannot use GetField on a non-struct interface")
+	}
+
+	objValue := reflectValue(obj)
+	objType := objValue.Type()
+	fieldsCount := objType.NumField()
+
+	// Should this be cached by obj.(type)?
+	allTags := make(map[string]string)
+
+	for i := 0; i < fieldsCount; i++ {
+		structField := objType.Field(i)
+		if isExportableField(structField) {
+			primary_tag := primaryTag(structField.Tag.Get(key))
+			if primary_tag != "" {
+				allTags[primary_tag] = structField.Name
+			}
+		}
+	}
+
+	return allTags, nil
+}
+
+func primaryTag(tags_csv string) string {
+	tags := strings.SplitN(tags_csv, ",", 2)
+	if len(tags) == 0 {
+		return tags_csv
+	}
+	return tags[0]
 }
 
 func reflectValue(obj interface{}) reflect.Value {
