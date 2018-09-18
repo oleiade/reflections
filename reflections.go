@@ -26,7 +26,7 @@ func GetField(obj interface{}, name string) (interface{}, error) {
 		return nil, errors.New("Cannot use GetField on a non-struct interface")
 	}
 
-	objValue := reflectValue(obj)
+	objValue := reflect.Value(obj)
 	field := objValue.FieldByName(name)
 	if !field.IsValid() {
 		return nil, fmt.Errorf("No such field: %s in obj", name)
