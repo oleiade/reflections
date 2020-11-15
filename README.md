@@ -14,23 +14,6 @@ Its API is inspired from python language (getattr, setattr, hasattr...) and prov
 
 Documentation is available at http://godoc.org/github.com/oleiade/reflections
 
-
-## Installation
-
-#### Into the gopath
-
-```
-    go get gopkg.in/oleiade/reflections.v1
-```
-
-#### Import it in your code
-
-```go
-    import (
-        "gopkg.in/oleiade/reflections.v1"
-    )
-```
-
 ## Usage
 
 #### Accessing structure fields
