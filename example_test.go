@@ -5,7 +5,7 @@ import (
 	"log"
 	"reflect"
 
-	"github.com/oleiade/reflections"
+	"github.com/oleiade/reflections/v1"
 )
 
 type MyStruct struct {
