@@ -1,4 +1,4 @@
-module github.com/oleiade/reflections
+module github.com/oleiade/reflections/v1
 
 go 1.15
 
