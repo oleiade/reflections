@@ -91,6 +91,26 @@ func GetFieldTag(obj interface{}, fieldName, tagKey string) (string, error) {
 	return field.Tag.Get(tagKey), nil
 }
 
+// Function to get the the Field from it's json tag
+func GetNameFieldByTag(obj interface{}, tag string, key string) (string, error) {
+	if !hasValidType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
+		return "", errors.New("Cannot use GetFieldByTag on a non-struct interface")
+	}
+
+	objValue := reflectValue(obj)
+	objType := objValue.Type()
+	fieldsCount := objType.NumField()
+
+	for i := 0; i < fieldsCount; i++ {
+		structField := objType.Field(i)
+		if structField.Tag.Get(key) == tag {
+			return structField.Name, nil
+		}
+	}
+
+	return "", errors.New("tag doesn't exist in the given struct")
+}
+
 // SetField sets the provided obj field with provided value. obj param has
 // to be a pointer to a struct, otherwise it will soundly fail. Provided
 // value type should match with the struct field you're trying to set.
@@ -175,6 +195,25 @@ func fields(obj interface{}, deep bool) ([]string, error) {
 	}
 
 	return allFields, nil
+}
+
+// Converts a map datatype to struct datatype
+// obj must be a pointer to a structure
+func MapToStruct(obj map[string]interface{}, result interface{}) error {
+	if !hasValidType(obj, []reflect.Kind{reflect.Map}) {
+		return errors.New("Cannot use MapToStruct on a non-map interface")
+	}
+
+	if !hasValidType(result, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
+		return errors.New("result must be a pointer to a struct")
+	}
+
+	t := reflect.ValueOf(result).Elem()
+	for k, v := range obj {
+		val := t.FieldByName(k)
+		val.Set(reflect.ValueOf(v))
+	}
+	return nil
 }
 
 // Items returns the field - value struct pairs as a map. obj can whether

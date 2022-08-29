@@ -443,6 +443,33 @@ func TestItems_deep(t *testing.T) {
 	assert.Equal(t, itemsDeep["Number"], 17)
 }
 
+func TestGetNameFieldByTag(t *testing.T) {
+
+	dummyStruct := TestStruct{
+		Dummy: "test",
+		Yummy: 123,
+	}
+
+	tagJson := "dummytag"
+	field, err := GetNameFieldByTag(dummyStruct, tagJson, "test")
+
+	assert.NoError(t, err)
+	assert.Equal(t, field, "Dummy")
+}
+
+func TestGetNameFieldByTag_on_non_existing_tag(t *testing.T) {
+
+	dummyStruct := TestStruct{
+		Dummy: "test",
+		Yummy: 123,
+	}
+
+	tagJson := "tag"
+	_, err := GetNameFieldByTag(dummyStruct, tagJson, "test")
+
+	assert.Error(t, err)
+}
+
 func TestTags_deep(t *testing.T) {
 	type Address struct {
 		Street string `tag:"be"`
@@ -503,4 +530,21 @@ func TestFields_deep(t *testing.T) {
 	assert.Equal(t, fieldsDeep[0], "Name")
 	assert.Equal(t, fieldsDeep[1], "Street")
 	assert.Equal(t, fieldsDeep[2], "Number")
+}
+
+func TestMapToStruct_on_map(t *testing.T) {
+	testMap := make(map[string]interface{})
+	testMap["Dummy"] = "test"
+	testMap["Yummy"] = 123
+
+	dummyStruct := TestStruct{
+		Dummy: "test",
+		Yummy: 123,
+	}
+
+	var convertedMap TestStruct
+	err := MapToStruct(testMap, &convertedMap)
+
+	assert.NoError(t, err)
+	assert.Equal(t, convertedMap, dummyStruct)
 }
