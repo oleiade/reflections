@@ -198,7 +198,7 @@ func fields(obj interface{}, deep bool) ([]string, error) {
 }
 
 // Converts a map datatype to struct datatype
-// obj must be a pointer to a structure
+// result must be a pointer to a structure
 func MapToStruct(obj map[string]interface{}, result interface{}) error {
 	if !hasValidType(obj, []reflect.Kind{reflect.Map}) {
 		return errors.New("Cannot use MapToStruct on a non-map interface")
