@@ -18,6 +18,8 @@ type TestStruct struct {
 }
 
 func TestGetField_on_struct(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 	}
@@ -28,6 +30,8 @@ func TestGetField_on_struct(t *testing.T) {
 }
 
 func TestGetField_on_struct_pointer(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := &TestStruct{
 		Dummy: "test",
 	}
@@ -38,6 +42,8 @@ func TestGetField_on_struct_pointer(t *testing.T) {
 }
 
 func TestGetField_on_non_struct(t *testing.T) {
+	t.Parallel()
+
 	dummy := "abc 123"
 
 	_, err := GetField(dummy, "Dummy")
@@ -45,6 +51,8 @@ func TestGetField_on_non_struct(t *testing.T) {
 }
 
 func TestGetField_non_existing_field(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 	}
@@ -54,17 +62,21 @@ func TestGetField_non_existing_field(t *testing.T) {
 }
 
 func TestGetField_unexported_field(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		unexported: 12345,
 		Dummy:      "test",
 	}
 
 	assert.Panics(t, func() {
-		GetField(dummyStruct, "unexported")
+		GetField(dummyStruct, "unexported") //nolint:errcheck,gosec
 	})
 }
 
 func TestGetFieldKind_on_struct(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -80,6 +92,8 @@ func TestGetFieldKind_on_struct(t *testing.T) {
 }
 
 func TestGetFieldKind_on_struct_pointer(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := &TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -95,6 +109,8 @@ func TestGetFieldKind_on_struct_pointer(t *testing.T) {
 }
 
 func TestGetFieldKind_on_non_struct(t *testing.T) {
+	t.Parallel()
+
 	dummy := "abc 123"
 
 	_, err := GetFieldKind(dummy, "Dummy")
@@ -102,6 +118,8 @@ func TestGetFieldKind_on_non_struct(t *testing.T) {
 }
 
 func TestGetFieldKind_non_existing_field(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -112,6 +130,8 @@ func TestGetFieldKind_non_existing_field(t *testing.T) {
 }
 
 func TestGetFieldType_on_struct(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -127,6 +147,8 @@ func TestGetFieldType_on_struct(t *testing.T) {
 }
 
 func TestGetFieldType_on_struct_pointer(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := &TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -142,6 +164,8 @@ func TestGetFieldType_on_struct_pointer(t *testing.T) {
 }
 
 func TestGetFieldType_on_non_struct(t *testing.T) {
+	t.Parallel()
+
 	dummy := "abc 123"
 
 	_, err := GetFieldType(dummy, "Dummy")
@@ -149,6 +173,8 @@ func TestGetFieldType_on_non_struct(t *testing.T) {
 }
 
 func TestGetFieldType_non_existing_field(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -159,6 +185,8 @@ func TestGetFieldType_non_existing_field(t *testing.T) {
 }
 
 func TestGetFieldTag_on_struct(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{}
 
 	tag, err := GetFieldTag(dummyStruct, "Dummy", "test")
@@ -171,6 +199,8 @@ func TestGetFieldTag_on_struct(t *testing.T) {
 }
 
 func TestGetFieldTag_on_struct_pointer(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := &TestStruct{}
 
 	tag, err := GetFieldTag(dummyStruct, "Dummy", "test")
@@ -183,6 +213,8 @@ func TestGetFieldTag_on_struct_pointer(t *testing.T) {
 }
 
 func TestGetFieldTag_on_non_struct(t *testing.T) {
+	t.Parallel()
+
 	dummy := "abc 123"
 
 	_, err := GetFieldTag(dummy, "Dummy", "test")
@@ -190,6 +222,8 @@ func TestGetFieldTag_on_non_struct(t *testing.T) {
 }
 
 func TestGetFieldTag_non_existing_field(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{}
 
 	_, err := GetFieldTag(dummyStruct, "obladioblada", "test")
@@ -197,6 +231,8 @@ func TestGetFieldTag_non_existing_field(t *testing.T) {
 }
 
 func TestGetFieldTag_unexported_field(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		unexported: 12345,
 		Dummy:      "test",
@@ -207,6 +243,8 @@ func TestGetFieldTag_unexported_field(t *testing.T) {
 }
 
 func TestSetField_on_struct_with_valid_value_type(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 	}
@@ -216,14 +254,9 @@ func TestSetField_on_struct_with_valid_value_type(t *testing.T) {
 	assert.Equal(t, dummyStruct.Dummy, "abc")
 }
 
-// func TestSetField_on_non_struct(t *testing.T) {
-//     dummy := "abc 123"
-
-//     err := SetField(&dummy, "Dummy", "abc")
-//     assert.Error(t, err)
-// }
-
 func TestSetField_non_existing_field(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 	}
@@ -233,6 +266,8 @@ func TestSetField_non_existing_field(t *testing.T) {
 }
 
 func TestSetField_invalid_value_type(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 	}
@@ -242,6 +277,8 @@ func TestSetField_invalid_value_type(t *testing.T) {
 }
 
 func TestSetField_non_exported_field(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 	}
@@ -250,6 +287,8 @@ func TestSetField_non_exported_field(t *testing.T) {
 }
 
 func TestFields_on_struct(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -261,6 +300,8 @@ func TestFields_on_struct(t *testing.T) {
 }
 
 func TestFields_on_struct_pointer(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := &TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -272,6 +313,8 @@ func TestFields_on_struct_pointer(t *testing.T) {
 }
 
 func TestFields_on_non_struct(t *testing.T) {
+	t.Parallel()
+
 	dummy := "abc 123"
 
 	_, err := Fields(dummy)
@@ -279,6 +322,8 @@ func TestFields_on_non_struct(t *testing.T) {
 }
 
 func TestFields_with_non_exported_fields(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		unexported: 6789,
 		Dummy:      "test",
@@ -291,6 +336,8 @@ func TestFields_with_non_exported_fields(t *testing.T) {
 }
 
 func TestHasField_on_struct_with_existing_field(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -302,6 +349,8 @@ func TestHasField_on_struct_with_existing_field(t *testing.T) {
 }
 
 func TestHasField_on_struct_pointer_with_existing_field(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := &TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -313,6 +362,8 @@ func TestHasField_on_struct_pointer_with_existing_field(t *testing.T) {
 }
 
 func TestHasField_non_existing_field(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -324,6 +375,8 @@ func TestHasField_non_existing_field(t *testing.T) {
 }
 
 func TestHasField_on_non_struct(t *testing.T) {
+	t.Parallel()
+
 	dummy := "abc 123"
 
 	_, err := HasField(dummy, "Test")
@@ -331,6 +384,8 @@ func TestHasField_on_non_struct(t *testing.T) {
 }
 
 func TestHasField_unexported_field(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		unexported: 7890,
 		Dummy:      "test",
@@ -343,6 +398,8 @@ func TestHasField_unexported_field(t *testing.T) {
 }
 
 func TestTags_on_struct(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -357,6 +414,8 @@ func TestTags_on_struct(t *testing.T) {
 }
 
 func TestTags_on_struct_pointer(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := &TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -371,6 +430,8 @@ func TestTags_on_struct_pointer(t *testing.T) {
 }
 
 func TestTags_on_non_struct(t *testing.T) {
+	t.Parallel()
+
 	dummy := "abc 123"
 
 	_, err := Tags(dummy, "test")
@@ -378,6 +439,8 @@ func TestTags_on_non_struct(t *testing.T) {
 }
 
 func TestItems_on_struct(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -392,6 +455,8 @@ func TestItems_on_struct(t *testing.T) {
 }
 
 func TestItems_on_struct_pointer(t *testing.T) {
+	t.Parallel()
+
 	dummyStruct := &TestStruct{
 		Dummy: "test",
 		Yummy: 123,
@@ -406,13 +471,18 @@ func TestItems_on_struct_pointer(t *testing.T) {
 }
 
 func TestItems_on_non_struct(t *testing.T) {
+	t.Parallel()
+
 	dummy := "abc 123"
 
 	_, err := Items(dummy)
 	assert.Error(t, err)
 }
 
+//nolint:unused
 func TestItems_deep(t *testing.T) {
+	t.Parallel()
+
 	type Address struct {
 		Street string `tag:"be"`
 		Number int    `tag:"bi"`
@@ -481,7 +551,10 @@ func TestGetFieldNameByTagValue_on_non_existing_tag(t *testing.T) {
 
 }
 
+//nolint:unused
 func TestTags_deep(t *testing.T) {
+	t.Parallel()
+
 	type Address struct {
 		Street string `tag:"be"`
 		Number int    `tag:"bi"`
@@ -512,7 +585,10 @@ func TestTags_deep(t *testing.T) {
 	assert.Equal(t, tagsDeep["Number"], "bi")
 }
 
+//nolint:unused
 func TestFields_deep(t *testing.T) {
+	t.Parallel()
+
 	type Address struct {
 		Street string `tag:"be"`
 		Number int    `tag:"bi"`
