@@ -12,6 +12,22 @@ In practice, the `reflect` library's API proves somewhat low-level and un-intuit
 
 The `reflections` package aims to make developers' life easier when it comes to introspect struct values at runtime. Its API takes inspiration in the python language's `getattr,` `setattr,` and `hasattr` set of methods and provides simplified access to structure fields and tags.
 
+- [Reflections](#reflections)
+  - [Documentation](#documentation)
+  - [Usage](#usage)
+  - [Accessing structure fields](#accessing-structure-fields)
+    - [`GetField`](#getfield)
+    - [`GetFieldKind`](#getfieldkind)
+    - [`GetFieldType`](#getfieldtype)
+    - [`GetFieldTag`](#getfieldtag)
+    - [`HasField`](#hasfield)
+    - [Fields](#fields)
+    - [Items](#items)
+    - [Tags](#tags)
+    - [Set a structure field value](#set-a-structure-field-value)
+  - [Important notes](#important-notes)
+  - [Contribute](#contribute)
+
 ## Documentation
 
 Head to the [documentation](https://pkg.go.dev/github.com/oleiade/reflections) to get more details on the library's API.
