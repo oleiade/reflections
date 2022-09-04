@@ -4,12 +4,19 @@
 
 /*
 Package reflections provides high level abstractions above the
-reflect library.
+Go standard [reflect] library.
 
-Reflect library is very low-level and as can be quite complex when it comes to do simple things like accessing a structure field value, a field tag...
+My experience of the `reflect` library's API is that it's somewhat low-level
+and unintuitive. Using it can rapidly become pretty complex,
+daunting, and scary, especially when doing simple things like
+accessing a structure field value, a field tag, etc.
 
-The purpose of reflections package is to make developers life easier when it comes to introspect structures at runtime.
-It's API is freely inspired from python language (getattr, setattr, hasattr...) and provides a simplified access to structure fields and tags.
+The `reflections` package aims to make developers' life easier when it comes to
+introspect struct values at runtime.
+Its API is inspired by the python language `getattr,` `setattr,` and `hasattr` set
+of methods and provides simplified access to structure fields and tags.
+
+[reflect]: http://golang.org/pkg/reflect/
 */
 package reflections
 
