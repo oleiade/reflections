@@ -446,12 +446,12 @@ func TestItems_deep(t *testing.T) {
 func TestGetNameFieldByTag(t *testing.T) {
 
 	dummyStruct := TestStruct{
-		Dummy: "test",
+		Dummy: "dummy",
 		Yummy: 123,
 	}
 
 	tagJson := "dummytag"
-	field, err := GetNameFieldByTag(dummyStruct, tagJson, "test")
+	field, err := GetFieldNameByTagValue(dummyStruct, tagJson, "test")
 
 	assert.NoError(t, err)
 	assert.Equal(t, field, "Dummy")
@@ -460,14 +460,25 @@ func TestGetNameFieldByTag(t *testing.T) {
 func TestGetNameFieldByTag_on_non_existing_tag(t *testing.T) {
 
 	dummyStruct := TestStruct{
-		Dummy: "test",
+		Dummy: "dummy",
 		Yummy: 123,
 	}
 
+	// non existing tag value with an existing tag key
 	tagJson := "tag"
-	_, err := GetNameFieldByTag(dummyStruct, tagJson, "test")
+	_, errTagValue := GetFieldNameByTagValue(dummyStruct, tagJson, "test")
+	assert.Error(t, errTagValue)
 
-	assert.Error(t, err)
+	// non existing tag key with an existing tag value
+	tagJson = "dummytag"
+	_, errTagKey := GetFieldNameByTagValue(dummyStruct, tagJson, "json")
+	assert.Error(t, errTagKey)
+
+	// non existing tag key and value
+	tagJson = "tag"
+	_, errTagKeyValue := GetFieldNameByTagValue(dummyStruct, tagJson, "json")
+	assert.Error(t, errTagKeyValue)
+
 }
 
 func TestTags_deep(t *testing.T) {
@@ -530,21 +541,4 @@ func TestFields_deep(t *testing.T) {
 	assert.Equal(t, fieldsDeep[0], "Name")
 	assert.Equal(t, fieldsDeep[1], "Street")
 	assert.Equal(t, fieldsDeep[2], "Number")
-}
-
-func TestMapToStruct_on_map(t *testing.T) {
-	testMap := make(map[string]interface{})
-	testMap["Dummy"] = "test"
-	testMap["Yummy"] = 123
-
-	dummyStruct := TestStruct{
-		Dummy: "test",
-		Yummy: 123,
-	}
-
-	var convertedMap TestStruct
-	err := MapToStruct(testMap, &convertedMap)
-
-	assert.NoError(t, err)
-	assert.Equal(t, convertedMap, dummyStruct)
 }

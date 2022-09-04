@@ -1,6 +1,7 @@
 package reflections_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"reflect"
@@ -212,4 +213,47 @@ func ExampleSetField() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func ExampleGetFieldNameByTagValue() {
+	type Order struct {
+		Step     string `json:"order_step"`
+		Id       string `json:"id"`
+		Category string `json:"category"`
+	}
+	type Condition struct {
+		Field string `json:"field"`
+		Value string `json:"value"`
+		Next  string `json:"next"`
+	}
+
+	// JSON data from external source
+	orderJson := `{
+		"order_step": "cooking",
+		"id": "45457-fv54f54",
+		"category": "Pizzas"
+	}`
+
+	conditionJson := `{
+		"field": "order_step", 
+		"value": "cooking",
+		"next": "serve"
+	}`
+
+	// Storing Json in corresponding Variables
+	var order Order
+	json.Unmarshal([]byte(orderJson), &order)
+
+	var condition Condition
+	json.Unmarshal([]byte(conditionJson), &condition)
+
+	// example
+	// condition.Field = "order_step"
+	// we need to get this value order[condition.Field]
+	// but condition.Field in go needs to be "Step" not "order_step"
+	// this is what GetFieldNameByTagValue is about
+	// returns fieldName = "Step"
+	fieldName, _ := reflections.GetFieldNameByTagValue(condition, condition.Field, "json")
+	fieldValue, _ := reflections.GetField(order, fieldName)
+	fmt.Println(fieldValue)
 }

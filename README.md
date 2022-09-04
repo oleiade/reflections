@@ -216,6 +216,26 @@ unexported fields cannot be set, and that field type and value type have to matc
     err := reflection.SetField(&s, "FirstField", 123)  // err != nil
 ```
 
+##### GetFieldNameByTagValue
+
+*GetFieldNameByTagValue* looks up a field with a matching `{tagKey}:"{tagValue}"` tag in the provided `obj` item.
+If `obj` is not a `struct`, nor a `pointer`, or it does not have a field tagged with the `tagKey`, and the matching `tagValue`, this function returns an error. 
+
+```go
+    s := MyStruct {
+        FirstField: "first value",      `matched:"first tag"`
+        SecondField: 2,                 `matched:"second tag"`
+        ThirdField: "third value",      `unmatched:"third tag"`
+    }
+
+    // Getting field name from external source as json would be headache to convert it manually, so we get it directly from struct tag
+    // returns fieldName = "FirstField"
+    fieldName, _ = reflections.GetFieldNameByTagValue(s, "first tag", "matched");
+
+    // later we can do GetField(s, fieldName)
+```
+
+
 ## Important notes
 
 * **unexported fields** cannot be accessed or set using reflections library: the golang reflect library intentionaly prohibits unexported fields values access or modifications.
