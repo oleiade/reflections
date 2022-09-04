@@ -443,7 +443,7 @@ func TestItems_deep(t *testing.T) {
 	assert.Equal(t, itemsDeep["Number"], 17)
 }
 
-func TestGetNameFieldByTag(t *testing.T) {
+func TestGetFieldNameByTagValue(t *testing.T) {
 
 	dummyStruct := TestStruct{
 		Dummy: "dummy",
@@ -457,7 +457,7 @@ func TestGetNameFieldByTag(t *testing.T) {
 	assert.Equal(t, field, "Dummy")
 }
 
-func TestGetNameFieldByTag_on_non_existing_tag(t *testing.T) {
+func TestGetFieldNameByTagValue_on_non_existing_tag(t *testing.T) {
 
 	dummyStruct := TestStruct{
 		Dummy: "dummy",
