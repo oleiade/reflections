@@ -2,22 +2,17 @@
 //
 // See the file LICENSE for copying permission.
 
-/*
-Package reflections provides high level abstractions above the
-Go standard [reflect] library.
-
-My experience of the `reflect` library's API is that it's somewhat low-level
-and unintuitive. Using it can rapidly become pretty complex,
-daunting, and scary, especially when doing simple things like
-accessing a structure field value, a field tag, etc.
-
-The `reflections` package aims to make developers' life easier when it comes to
-introspect struct values at runtime.
-Its API is inspired by the python language `getattr,` `setattr,` and `hasattr` set
-of methods and provides simplified access to structure fields and tags.
-
-[reflect]: http://golang.org/pkg/reflect/
-*/
+// Package reflections provides high level abstractions over the Go standard [reflect] library.
+//
+// In practice, the `reflect` library's API proves somewhat low-level and un-intuitive.
+// Using it can turn out pretty complex, daunting, and scary, especially when doing simple
+// things like accessing a structure field value, a field tag, etc.
+//
+// The `reflections` package aims to make developers' life easier when it comes to introspect
+// struct values at runtime. Its API takes inspiration in the python language's `getattr,` `setattr,` and `hasattr` set
+// of methods and provides simplified access to structure fields and tags.
+//
+// [reflect]: http://golang.org/pkg/reflect/
 package reflections
 
 import (
@@ -31,11 +26,11 @@ import (
 var ErrUnsupportedType = errors.New("unsupported type")
 
 // ErrUnexportedField indicates that an operation failed as a result of
-// being applied on a non-exported struct field.
+// applying to a non-exported struct field.
 var ErrUnexportedField = errors.New("unexported field")
 
-// GetField returns the value of the provided obj field. obj can whether
-// be a structure or pointer to structure.
+// GetField returns the value of the provided obj field.
+// The `obj` can either be a structure or pointer to structure.
 func GetField(obj interface{}, name string) (interface{}, error) {
 	if !isSupportedType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
 		return nil, fmt.Errorf("cannot use GetField on a non-struct object: %w", ErrUnsupportedType)
@@ -50,8 +45,8 @@ func GetField(obj interface{}, name string) (interface{}, error) {
 	return field.Interface(), nil
 }
 
-// GetFieldKind returns the kind of the provided obj field. obj can whether
-// be a structure or pointer to structure.
+// GetFieldKind returns the kind of the provided obj field.
+// The `obj` can either be a structure or pointer to structure.
 func GetFieldKind(obj interface{}, name string) (reflect.Kind, error) {
 	if !isSupportedType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
 		return reflect.Invalid, fmt.Errorf("cannot use GetFieldKind on a non-struct interface: %w", ErrUnsupportedType)
@@ -67,8 +62,8 @@ func GetFieldKind(obj interface{}, name string) (reflect.Kind, error) {
 	return field.Type().Kind(), nil
 }
 
-// GetFieldType returns the kind of the provided obj field. obj can whether
-// be a structure or pointer to structure.
+// GetFieldType returns the kind of the provided obj field.
+// The `obj` can either be a structure or pointer to structure.
 func GetFieldType(obj interface{}, name string) (string, error) {
 	if !isSupportedType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
 		return "", fmt.Errorf("cannot use GetFieldType on a non-struct interface: %w", ErrUnsupportedType)
@@ -84,8 +79,8 @@ func GetFieldType(obj interface{}, name string) (string, error) {
 	return field.Type().String(), nil
 }
 
-// GetFieldTag returns the provided obj field tag value. obj can whether
-// be a structure or pointer to structure.
+// GetFieldTag returns the provided obj field tag value.
+// The `obj` parameter can either be a structure or pointer to structure.
 func GetFieldTag(obj interface{}, fieldName, tagKey string) (string, error) {
 	if !isSupportedType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
 		return "", fmt.Errorf("cannot use GetFieldTag on a non-struct interface: %w", ErrUnsupportedType)
@@ -127,9 +122,10 @@ func GetFieldNameByTagValue(obj interface{}, tagValue string, tagKey string) (st
 	return "", errors.New("tag doesn't exist in the given struct")
 }
 
-// SetField sets the provided obj field with provided value. obj param has
-// to be a pointer to a struct, otherwise it will soundly fail. Provided
-// value type should match with the struct field you're trying to set.
+// SetField sets the provided obj field with provided value.
+//
+// The `obj` parameter must be a pointer to a struct, otherwise it soundly fails.
+// Provided value type should match with the struct field you're trying to set.
 func SetField(obj interface{}, name string, value interface{}) error {
 	// Fetch the field reflect.Value
 	structValue := reflect.ValueOf(obj).Elem()
@@ -139,7 +135,7 @@ func SetField(obj interface{}, name string, value interface{}) error {
 		return fmt.Errorf("no such field: %s in obj", name)
 	}
 
-	// If obj field value is not settable an error is thrown
+	// If obj field value can't be set, return an error
 	if !structFieldValue.CanSet() {
 		return fmt.Errorf("cannot set %s field value", name)
 	}
@@ -155,8 +151,8 @@ func SetField(obj interface{}, name string, value interface{}) error {
 	return nil
 }
 
-// HasField checks if the provided field name is part of a struct. obj can whether
-// be a structure or pointer to structure.
+// HasField checks if the provided field name is part of a struct.
+// The `obj` can either be a structure or pointer to structure.
 func HasField(obj interface{}, name string) (bool, error) {
 	if !isSupportedType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
 		return false, fmt.Errorf("cannot use HasField on a non-struct interface: %w", ErrUnsupportedType)
@@ -172,14 +168,15 @@ func HasField(obj interface{}, name string) (bool, error) {
 	return true, nil
 }
 
-// Fields returns the struct fields names list. obj can whether
-// be a structure or pointer to structure.
+// Fields returns the struct fields names list.
+// The `obj` parameter can either be a structure or pointer to structure.
 func Fields(obj interface{}) ([]string, error) {
 	return fields(obj, false)
 }
 
-// FieldsDeep returns "flattened" fields (fields from anonymous
-// inner structs are treated as normal fields)
+// FieldsDeep returns "flattened" fields.
+//
+// Note that FieldsDeept treats fields from anonymous inner structs as normal fields.
 func FieldsDeep(obj interface{}) ([]string, error) {
 	return fields(obj, true)
 }
@@ -214,14 +211,14 @@ func fields(obj interface{}, deep bool) ([]string, error) {
 	return allFields, nil
 }
 
-// Items returns the field - value struct pairs as a map. obj can whether
-// be a structure or pointer to structure.
+// Items returns the field:value struct pairs as a map.
+// The `obj` parameter can either be a structure or pointer to structure.
 func Items(obj interface{}) (map[string]interface{}, error) {
 	return items(obj, false)
 }
 
-// ItemsDeep returns "flattened" items (fields from anonymous
-// inner structs are treated as normal fields)
+// ItemsDeep returns "flattened" items.
+// Note that ItemsDeep will treat fields from anonymous inner structs as normal fields.
 func ItemsDeep(obj interface{}) (map[string]interface{}, error) {
 	return items(obj, true)
 }
@@ -261,14 +258,15 @@ func items(obj interface{}, deep bool) (map[string]interface{}, error) {
 	return allItems, nil
 }
 
-// Tags lists the struct tag fields. obj can whether
-// be a structure or pointer to structure.
+// Tags lists the struct tag fields.
+// The `obj` can whether be a structure or pointer to structure.
 func Tags(obj interface{}, key string) (map[string]string, error) {
 	return tags(obj, key, false)
 }
 
-// TagsDeep returns "flattened" tags (fields from anonymous
-// inner structs are treated as normal fields)
+// TagsDeep returns "flattened" tags.
+// Note that TagsDeep treats fields from anonymous
+// inner structs as normal fields.
 func TagsDeep(obj interface{}, key string) (map[string]string, error) {
 	return tags(obj, key, true)
 }
