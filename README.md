@@ -228,7 +228,8 @@ If `obj` is not a `struct`, nor a `pointer`, or it does not have a field tagged 
         ThirdField: "third value",      `unmatched:"third tag"`
     }
 
-    // Getting field name from external source as json would be headache to convert it manually, so we get it directly from struct tag
+    // Getting field name from external source as json would be a headache to convert it manually, 
+    // so we get it directly from struct tag
     // returns fieldName = "FirstField"
     fieldName, _ = reflections.GetFieldNameByTagValue(s, "first tag", "matched");
 
