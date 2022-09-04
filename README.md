@@ -8,9 +8,9 @@
 
 The `reflections` library provides high-level abstractions on top of the go language standard `reflect` library.
 
-My experience of the `reflect` library's API is that it's somewhat low-level and unintuitive. Using it can rapidly become pretty complex, daunting, and scary, especially when doing simple things like accessing a structure field value, a field tag, etc.
+In practice, the `reflect` library's API proves somewhat low-level and un-intuitive. Using it can turn out pretty complex, daunting, and scary, especially when doing simple things like accessing a structure field value, a field tag, etc.
 
-The `reflections` package aims to make developers' life easier when it comes to introspect struct values at runtime. Its API is inspired by the python language `getattr,` `setattr,` and `hasattr` set of methods and provides simplified access to structure fields and tags.
+The `reflections` package aims to make developers' life easier when it comes to introspect struct values at runtime. Its API takes inspiration in the python language's `getattr,` `setattr,` and `hasattr` set of methods and provides simplified access to structure fields and tags.
 
 ## Documentation
 
@@ -20,9 +20,9 @@ Head to the [documentation](https://pkg.go.dev/github.com/oleiade/reflections) t
 
 ## Accessing structure fields
 
-### GetField
+### `GetField`
 
-`GetField` returns the content of a structure field. For example, it can be beneficial when you want to iterate over struct-specific field values. You can provide `GetField` a structure or a pointer to a struct as the first argument.
+`GetField` returns the content of a structure field. For example, it proves beneficial when you want to iterate over struct-specific field values. You can provide `GetField` a structure or a pointer to a struct as the first argument.
 
 ```go
 s := MyStruct {
@@ -39,7 +39,7 @@ for _, fieldName := range fieldsToExtract {
 }
 ```
 
-### GetFieldKind
+### `GetFieldKind`
 
 `GetFieldKind` returns the [`reflect.Kind`](http://golang.org/src/pkg/reflect/type.go?s=6916:6930#L189) of a structure field. You can use it to operate type assertion over a structure field at runtime. You can provide `GetFieldKind` a structure or a pointer to structure as the first argument.
 
@@ -65,7 +65,7 @@ if err != nil {
 }
 ```
 
-### GetFieldType
+### `GetFieldType`
 
 `GetFieldType` returns the string literal of a structure field type. You can use it to operate type assertion over a structure field at runtime. You can provide `GetFieldType` a structure or a pointer to structure as the first argument.
 
@@ -91,7 +91,7 @@ if err != nil {
 }
 ```
 
-### GetFieldTag
+### `GetFieldTag`
 
 `GetFieldTag` extracts a specific structure field tag. You can provide `GetFieldTag` a structure or a pointer to structure as the first argument.
 
@@ -111,7 +111,7 @@ if err != nil {
 fmt.Println(tag)
 ```
 
-### HasField
+### `HasField`
 
 `HasField` asserts a field exists through the structure. You can provide `HasField` a struct or a pointer to a struct as the first argument.
 
@@ -131,7 +131,7 @@ has, _ := reflections.HasField(s, "FourthField")
 
 ### Fields
 
-`Fields` returns the list of structure field names so that you can access or modify them later. You can provide `Fields` with a struct or a pointer to a struct as the first argument.
+`Fields` returns the list of structure field names so that you can access or update them later. You can provide `Fields` with a struct or a pointer to a struct as the first argument.
 
 ```go
 s := MyStruct {
@@ -192,7 +192,7 @@ structTags, _ = reflections.Tags(s, "matched")
 
 ### Set a structure field value
 
-`SetField` update's a structure's field value with the one provided. Note that you can't set unexported fields and that the field and value types must match.
+`SetField` update's a structure's field value with the one provided. Note that you can't set un-exported fields and that the field and value types must match.
 
 ```go
 s := MyStruct {
@@ -212,12 +212,12 @@ err := reflection.SetField(&s, "FirstField", 123) // err != nil
 
 ## Important notes
 
-- **unexported fields** cannot be accessed nor set using the `reflections` library. The Go lang standard `reflect` library intentionally prohibits unexported fields values access or modifications.
+- **un-exported fields** can't be accessed nor set using the `reflections` library. The Go lang standard `reflect` library intentionally prohibits un-exported fields values access or modifications.
 
 ## Contribute
 
 - Check for open issues or open a new issue to start a discussion around a feature idea or a bug.
-- Fork `the repository`\_ on GitHub to start making your changes to the **master** branch (or branch off of it).
+- Fork `the repository`\_ on GitHub to start making your changes to the **master** branch, or branch off of it.
 - Write tests showing that the bug was fixed or the feature works as expected.
 - Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to AUTHORS\_.
 
