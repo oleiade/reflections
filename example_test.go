@@ -1,6 +1,7 @@
 package reflections_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"reflect"
@@ -212,4 +213,52 @@ func ExampleSetField() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func ExampleGetFieldNameByTagValue() {
+	type Order struct {
+		Step     string `json:"order_step"`
+		ID       string `json:"id"`
+		Category string `json:"category"`
+	}
+	type Condition struct {
+		Field string `json:"field"`
+		Value string `json:"value"`
+		Next  string `json:"next"`
+	}
+
+	// JSON data from external source
+	orderJSON := `{
+		"order_step": "cooking",
+		"id": "45457-fv54f54",
+		"category": "Pizzas"
+	}`
+
+	conditionJSON := `{
+		"field": "order_step", 
+		"value": "cooking",
+		"next": "serve"
+	}`
+
+	// Storing JSON in corresponding Variables
+	var order Order
+	err := json.Unmarshal([]byte(orderJSON), &order)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var condition Condition
+	err = json.Unmarshal([]byte(conditionJSON), &condition)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fieldName, _ := reflections.GetFieldNameByTagValue(order, "json", condition.Field)
+	fmt.Println(fieldName)
+	fieldValue, _ := reflections.GetField(order, fieldName)
+	fmt.Println(fieldValue)
+
+	// Output:
+	// Step
+	// cooking
 }

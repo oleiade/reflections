@@ -513,6 +513,45 @@ func TestItems_deep(t *testing.T) {
 	assert.Equal(t, itemsDeep["Number"], 17)
 }
 
+func TestGetFieldNameByTagValue(t *testing.T) {
+	t.Parallel()
+
+	dummyStruct := TestStruct{
+		Dummy: "dummy",
+		Yummy: 123,
+	}
+
+	tagJSON := "dummytag"
+	field, err := GetFieldNameByTagValue(dummyStruct, "test", tagJSON)
+
+	assert.NoError(t, err)
+	assert.Equal(t, field, "Dummy")
+}
+
+func TestGetFieldNameByTagValue_on_non_existing_tag(t *testing.T) {
+	t.Parallel()
+
+	dummyStruct := TestStruct{
+		Dummy: "dummy",
+		Yummy: 123,
+	}
+
+	// non existing tag value with an existing tag key
+	tagJSON := "tag"
+	_, errTagValue := GetFieldNameByTagValue(dummyStruct, "test", tagJSON)
+	assert.Error(t, errTagValue)
+
+	// non existing tag key with an existing tag value
+	tagJSON = "dummytag"
+	_, errTagKey := GetFieldNameByTagValue(dummyStruct, "json", tagJSON)
+	assert.Error(t, errTagKey)
+
+	// non existing tag key and value
+	tagJSON = "tag"
+	_, errTagKeyValue := GetFieldNameByTagValue(dummyStruct, "json", tagJSON)
+	assert.Error(t, errTagKeyValue)
+}
+
 //nolint:unused
 func TestTags_deep(t *testing.T) {
 	t.Parallel()

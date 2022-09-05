@@ -101,6 +101,28 @@ func GetFieldTag(obj interface{}, fieldName, tagKey string) (string, error) {
 	return field.Tag.Get(tagKey), nil
 }
 
+// GetFieldNameByTagValue looks up a field with a matching `{tagKey}:"{tagValue}"` tag in the provided `obj` item.
+// The `obj` parameter must be a `struct`, or a `pointer` to one. If the `obj` parameter doesn't have a field tagged
+// with the `tagKey`, and the matching `tagValue`, this function returns an error.
+func GetFieldNameByTagValue(obj interface{}, tagKey, tagValue string) (string, error) {
+	if !isSupportedType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
+		return "", fmt.Errorf("cannot use GetFieldByTag on a non-struct interface: %w", ErrUnsupportedType)
+	}
+
+	objValue := reflectValue(obj)
+	objType := objValue.Type()
+	fieldsCount := objType.NumField()
+
+	for i := 0; i < fieldsCount; i++ {
+		structField := objType.Field(i)
+		if structField.Tag.Get(tagKey) == tagValue {
+			return structField.Name, nil
+		}
+	}
+
+	return "", errors.New("tag doesn't exist in the given struct")
+}
+
 // SetField sets the provided obj field with provided value.
 //
 // The `obj` parameter must be a pointer to a struct, otherwise it soundly fails.
