@@ -1,11 +1,11 @@
-// Copyright (c) 2013 Théo Crevon
+// Copyright © 2013 Théo Crevon
 //
 // See the file LICENSE for copying permission.
 
 // Package reflections provides high level abstractions over the Go standard [reflect] library.
 //
 // In practice, the `reflect` library's API proves somewhat low-level and un-intuitive.
-// Using it can turn out pretty complex, daunting, and scary, especially when doing simple
+// Using it can turn out pretty complex, daunting, and scary, when doing simple
 // things like accessing a structure field value, a field tag, etc.
 //
 // The `reflections` package aims to make developers' life easier when it comes to introspect
@@ -21,8 +21,7 @@ import (
 	"reflect"
 )
 
-// ErrUnsupportedType indicates that the provided type is not supported
-// by the requested reflection operation.
+// ErrUnsupportedType indicates that the provided type doesn't support the requested reflection operation.
 var ErrUnsupportedType = errors.New("unsupported type")
 
 // ErrUnexportedField indicates that an operation failed as a result of
@@ -126,7 +125,7 @@ func GetFieldNameByTagValue(obj interface{}, tagKey, tagValue string) (string, e
 // SetField sets the provided obj field with provided value.
 //
 // The `obj` parameter must be a pointer to a struct, otherwise it soundly fails.
-// Provided value type should match with the struct field you're trying to set.
+// The provided `value` type should match with the struct field being set.
 func SetField(obj interface{}, name string, value interface{}) error {
 	// Fetch the field reflect.Value
 	structValue := reflect.ValueOf(obj).Elem()
@@ -136,7 +135,6 @@ func SetField(obj interface{}, name string, value interface{}) error {
 		return fmt.Errorf("no such field: %s in obj", name)
 	}
 
-	// If obj field value can't be set, return an error
 	if !structFieldValue.CanSet() {
 		return fmt.Errorf("cannot set %s field value", name)
 	}
@@ -152,7 +150,7 @@ func SetField(obj interface{}, name string, value interface{}) error {
 	return nil
 }
 
-// HasField checks if the provided field name is part of a struct.
+// HasField checks if the provided `obj` struct has field named `name`.
 // The `obj` can either be a structure or pointer to structure.
 func HasField(obj interface{}, name string) (bool, error) {
 	if !isSupportedType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
