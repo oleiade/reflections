@@ -218,7 +218,7 @@ func ExampleSetField() {
 func ExampleGetFieldNameByTagValue() {
 	type Order struct {
 		Step     string `json:"order_step"`
-		Id       string `json:"id"`
+		ID       string `json:"id"`
 		Category string `json:"category"`
 	}
 	type Condition struct {
@@ -228,32 +228,37 @@ func ExampleGetFieldNameByTagValue() {
 	}
 
 	// JSON data from external source
-	orderJson := `{
+	orderJSON := `{
 		"order_step": "cooking",
 		"id": "45457-fv54f54",
 		"category": "Pizzas"
 	}`
 
-	conditionJson := `{
+	conditionJSON := `{
 		"field": "order_step", 
 		"value": "cooking",
 		"next": "serve"
 	}`
 
-	// Storing Json in corresponding Variables
+	// Storing JSON in corresponding Variables
 	var order Order
-	json.Unmarshal([]byte(orderJson), &order)
+	err := json.Unmarshal([]byte(orderJSON), &order)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	var condition Condition
-	json.Unmarshal([]byte(conditionJson), &condition)
+	err = json.Unmarshal([]byte(conditionJSON), &condition)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// example
-	// condition.Field = "order_step"
-	// we need to get this value order[condition.Field]
-	// but condition.Field in go needs to be "Step" not "order_step"
-	// this is what GetFieldNameByTagValue is about
-	// returns fieldName = "Step"
-	fieldName, _ := reflections.GetFieldNameByTagValue(condition, condition.Field, "json")
+	fieldName, _ := reflections.GetFieldNameByTagValue(order, "json", condition.Field)
+	fmt.Println(fieldName)
 	fieldValue, _ := reflections.GetField(order, fieldName)
 	fmt.Println(fieldValue)
+
+	// Output:
+	// Step
+	// cooking
 }

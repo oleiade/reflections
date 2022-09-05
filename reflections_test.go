@@ -514,20 +514,22 @@ func TestItems_deep(t *testing.T) {
 }
 
 func TestGetFieldNameByTagValue(t *testing.T) {
+	t.Parallel()
 
 	dummyStruct := TestStruct{
 		Dummy: "dummy",
 		Yummy: 123,
 	}
 
-	tagJson := "dummytag"
-	field, err := GetFieldNameByTagValue(dummyStruct, tagJson, "test")
+	tagJSON := "dummytag"
+	field, err := GetFieldNameByTagValue(dummyStruct, "test", tagJSON)
 
 	assert.NoError(t, err)
 	assert.Equal(t, field, "Dummy")
 }
 
 func TestGetFieldNameByTagValue_on_non_existing_tag(t *testing.T) {
+	t.Parallel()
 
 	dummyStruct := TestStruct{
 		Dummy: "dummy",
@@ -535,20 +537,19 @@ func TestGetFieldNameByTagValue_on_non_existing_tag(t *testing.T) {
 	}
 
 	// non existing tag value with an existing tag key
-	tagJson := "tag"
-	_, errTagValue := GetFieldNameByTagValue(dummyStruct, tagJson, "test")
+	tagJSON := "tag"
+	_, errTagValue := GetFieldNameByTagValue(dummyStruct, "test", tagJSON)
 	assert.Error(t, errTagValue)
 
 	// non existing tag key with an existing tag value
-	tagJson = "dummytag"
-	_, errTagKey := GetFieldNameByTagValue(dummyStruct, tagJson, "json")
+	tagJSON = "dummytag"
+	_, errTagKey := GetFieldNameByTagValue(dummyStruct, "json", tagJSON)
 	assert.Error(t, errTagKey)
 
 	// non existing tag key and value
-	tagJson = "tag"
-	_, errTagKeyValue := GetFieldNameByTagValue(dummyStruct, tagJson, "json")
+	tagJSON = "tag"
+	_, errTagKeyValue := GetFieldNameByTagValue(dummyStruct, "json", tagJSON)
 	assert.Error(t, errTagKeyValue)
-
 }
 
 //nolint:unused
