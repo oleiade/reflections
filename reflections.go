@@ -41,7 +41,7 @@ func GetField(obj interface{}, name string) (interface{}, error) {
 		return nil, fmt.Errorf("no such field: %s in obj", name)
 	}
 
-	return field.Interface(), nil
+	return field, nil
 }
 
 // GetFieldKind returns the kind of the provided obj field.
