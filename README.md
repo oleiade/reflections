@@ -15,16 +15,15 @@ The `reflections` package aims to make developers' life easier when it comes to 
 - [Reflections](#reflections)
   - [Documentation](#documentation)
   - [Usage](#usage)
-  - [Accessing structure fields](#accessing-structure-fields)
     - [`GetField`](#getfield)
     - [`GetFieldKind`](#getfieldkind)
     - [`GetFieldType`](#getfieldtype)
     - [`GetFieldTag`](#getfieldtag)
     - [`HasField`](#hasfield)
-    - [Fields](#fields)
-    - [Items](#items)
-    - [Tags](#tags)
-    - [Set a structure field value](#set-a-structure-field-value)
+    - [`Fields`](#fields)
+    - [`Items`](#items)
+    - [`Tags`](#tags)
+    - [`GetFieldNameByTagValue`](#getfieldnamebytagvalue)
   - [Important notes](#important-notes)
   - [Contribute](#contribute)
 
@@ -33,8 +32,6 @@ The `reflections` package aims to make developers' life easier when it comes to 
 Head to the [documentation](https://pkg.go.dev/github.com/oleiade/reflections) to get more details on the library's API.
 
 ## Usage
-
-## Accessing structure fields
 
 ### `GetField`
 
@@ -145,7 +142,7 @@ has, _ := reflections.HasField(s, "FirstField")
 has, _ := reflections.HasField(s, "FourthField")
 ```
 
-### Fields
+### `Fields`
 
 `Fields` returns the list of structure field names so that you can access or update them later. You can provide `Fields` with a struct or a pointer to a struct as the first argument.
 
@@ -164,7 +161,7 @@ var fields []string
 fields, _ = reflections.Fields(s)
 ```
 
-### Items
+### `Items`
 
 `Items` returns the structure's field name to the values map. You can provide `Items` with a struct or a pointer to structure as the first argument.
 
@@ -182,15 +179,15 @@ var structItems map[string]interface{}
 structItems, _ = reflections.Items(s)
 ```
 
-### Tags
+### `Tags`
 
 `Tags` returns the structure's fields tag with the provided key. You can provide `Tags` with a struct or a pointer to a struct as the first argument.
 
 ```go
 s := MyStruct {
-    FirstField: "first value", `matched:"first tag"`
-    SecondField: 2, `matched:"second tag"`
-    ThirdField: "third value", `unmatched:"third tag"`
+    FirstField: "first value",      `matched:"first tag"`
+    SecondField: 2,                 `matched:"second tag"`
+    ThirdField: "third value",      `unmatched:"third tag"`
 }
 
 var structTags map[string]string
@@ -206,9 +203,9 @@ var structTags map[string]string
 structTags, _ = reflections.Tags(s, "matched")
 ```
 
-### Set a structure field value
+### `SetField`
 
-`SetField` update's a structure's field value with the one provided. Note that you can't set un-exported fields and that the field and value types must match.
+`SetField` updates a structure's field value with the one provided. Note that you can't set un-exported fields and that the field and value types must match.
 
 ```go
 s := MyStruct {
@@ -226,37 +223,34 @@ _ := reflections.SetField(&s, "FirstField", "new value")
 err := reflection.SetField(&s, "FirstField", 123) // err != nil
 ```
 
-##### GetFieldNameByTagValue
+### `GetFieldNameByTagValue`
 
-*GetFieldNameByTagValue* looks up a field with a matching `{tagKey}:"{tagValue}"` tag in the provided `obj` item.
+`GetFieldNameByTagValue` looks up a field with a matching `{tagKey}:"{tagValue}"` tag in the provided `obj` item.
 If `obj` is not a `struct`, nor a `pointer`, or it does not have a field tagged with the `tagKey`, and the matching `tagValue`, this function returns an error. 
 
 ```go
-    s := MyStruct {
-        FirstField: "first value",      `matched:"first tag"`
-        SecondField: 2,                 `matched:"second tag"`
-        ThirdField: "third value",      `unmatched:"third tag"`
-    }
+s := MyStruct {
+    FirstField: "first value",      `matched:"first tag"`
+    SecondField: 2,                 `matched:"second tag"`
+    ThirdField: "third value",      `unmatched:"third tag"`
+}
 
-    // Getting field name from external source as json would be a headache to convert it manually, 
-    // so we get it directly from struct tag
-    // returns fieldName = "FirstField"
-    fieldName, _ = reflections.GetFieldNameByTagValue(s, "first tag", "matched");
+// Getting field name from external source as json would be a headache to convert it manually, 
+// so we get it directly from struct tag
+// returns fieldName = "FirstField"
+fieldName, _ = reflections.GetFieldNameByTagValue(s, "matched", "first tag");
 
-    // later we can do GetField(s, fieldName)
+// later we can do GetField(s, fieldName)
 ```
 
 
 ## Important notes
 
-- **un-exported fields** can't be accessed nor set using the `reflections` library. The Go lang standard `reflect` library intentionally prohibits un-exported fields values access or modifications.
+- **Un-exported fields** can't be accessed nor set using the `reflections` library. The Go lang standard `reflect` library intentionally prohibits un-exported fields values access or modifications.
 
 ## Contribute
 
 - Check for open issues or open a new issue to start a discussion around a feature idea or a bug.
-- Fork `the repository`\_ on GitHub to start making your changes to the **master** branch, or branch off of it.
+- Fork [the repository](http://github.com/oleiade/reflections) on GitHub to start making your changes to the **master** branch, or branch off of it.
 - Write tests showing that the bug was fixed or the feature works as expected.
-- Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to AUTHORS\_.
-
-[the repository](http://github.com/oleiade/reflections)
-[AUTHORS](https://github.com/oleiade/reflections/blob/master/AUTHORS.md)
+- Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to [`AUTHORS`](https://github.com/oleiade/reflections/blob/master/AUTHORS.md).
