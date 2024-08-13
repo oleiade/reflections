@@ -141,8 +141,8 @@ func SetField(obj interface{}, name string, value interface{}) error {
 
 	structFieldType := structFieldValue.Type()
 	val := reflect.ValueOf(value)
-	if structFieldType != val.Type() {
-		invalidTypeError := fmt.Errorf("provided value type didn't match obj field type")
+	if !val.Type().AssignableTo(structFieldType) {
+		invalidTypeError := fmt.Errorf("provided value type not assignable to obj field type")
 		return invalidTypeError
 	}
 
