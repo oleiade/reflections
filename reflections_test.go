@@ -619,3 +619,23 @@ func TestFields_deep(t *testing.T) {
 	assert.Equal(t, fieldsDeep[1], "Street")
 	assert.Equal(t, fieldsDeep[2], "Number")
 }
+
+type SingleString string
+
+type StringList []string
+
+type Bar struct {
+	A StringList
+}
+
+func TestAssignable(t *testing.T) {
+	var b Bar
+	expected := []string{"a", "b", "c"}
+	assert.Nil(t, SetField(&b, "A", expected))
+	assert.Equal(t, StringList(expected), b.A)
+
+	err := SetField(&b, "A", []int{0, 1, 2})
+	assert.NotNil(t, err)
+	assert.Equal(t, "provided value type not assignable to obj field type",
+		err.Error())
+}
