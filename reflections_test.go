@@ -9,12 +9,13 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type TestStruct struct {
-	unexported uint64
 	Dummy      string `test:"dummytag"`
-	Yummy      int    `test:"yummytag"`
+	unexported uint64
+	Yummy      int `test:"yummytag"`
 }
 
 func TestGetField_on_struct(t *testing.T) {
@@ -25,8 +26,8 @@ func TestGetField_on_struct(t *testing.T) {
 	}
 
 	value, err := GetField(dummyStruct, "Dummy")
-	assert.NoError(t, err)
-	assert.Equal(t, value, "test")
+	require.NoError(t, err)
+	assert.Equal(t, "test", value)
 }
 
 func TestGetField_on_struct_pointer(t *testing.T) {
@@ -37,8 +38,8 @@ func TestGetField_on_struct_pointer(t *testing.T) {
 	}
 
 	value, err := GetField(dummyStruct, "Dummy")
-	assert.NoError(t, err)
-	assert.Equal(t, value, "test")
+	require.NoError(t, err)
+	assert.Equal(t, "test", value)
 }
 
 func TestGetField_on_non_struct(t *testing.T) {
@@ -83,12 +84,12 @@ func TestGetFieldKind_on_struct(t *testing.T) {
 	}
 
 	kind, err := GetFieldKind(dummyStruct, "Dummy")
-	assert.NoError(t, err)
-	assert.Equal(t, kind, reflect.String)
+	require.NoError(t, err)
+	assert.Equal(t, reflect.String, kind)
 
 	kind, err = GetFieldKind(dummyStruct, "Yummy")
-	assert.NoError(t, err)
-	assert.Equal(t, kind, reflect.Int)
+	require.NoError(t, err)
+	assert.Equal(t, reflect.Int, kind)
 }
 
 func TestGetFieldKind_on_struct_pointer(t *testing.T) {
@@ -100,12 +101,12 @@ func TestGetFieldKind_on_struct_pointer(t *testing.T) {
 	}
 
 	kind, err := GetFieldKind(dummyStruct, "Dummy")
-	assert.NoError(t, err)
-	assert.Equal(t, kind, reflect.String)
+	require.NoError(t, err)
+	assert.Equal(t, reflect.String, kind)
 
 	kind, err = GetFieldKind(dummyStruct, "Yummy")
-	assert.NoError(t, err)
-	assert.Equal(t, kind, reflect.Int)
+	require.NoError(t, err)
+	assert.Equal(t, reflect.Int, kind)
 }
 
 func TestGetFieldKind_on_non_struct(t *testing.T) {
@@ -138,12 +139,12 @@ func TestGetFieldType_on_struct(t *testing.T) {
 	}
 
 	typeString, err := GetFieldType(dummyStruct, "Dummy")
-	assert.NoError(t, err)
-	assert.Equal(t, typeString, "string")
+	require.NoError(t, err)
+	assert.Equal(t, "string", typeString)
 
 	typeString, err = GetFieldType(dummyStruct, "Yummy")
-	assert.NoError(t, err)
-	assert.Equal(t, typeString, "int")
+	require.NoError(t, err)
+	assert.Equal(t, "int", typeString)
 }
 
 func TestGetFieldType_on_struct_pointer(t *testing.T) {
@@ -155,12 +156,12 @@ func TestGetFieldType_on_struct_pointer(t *testing.T) {
 	}
 
 	typeString, err := GetFieldType(dummyStruct, "Dummy")
-	assert.NoError(t, err)
-	assert.Equal(t, typeString, "string")
+	require.NoError(t, err)
+	assert.Equal(t, "string", typeString)
 
 	typeString, err = GetFieldType(dummyStruct, "Yummy")
-	assert.NoError(t, err)
-	assert.Equal(t, typeString, "int")
+	require.NoError(t, err)
+	assert.Equal(t, "int", typeString)
 }
 
 func TestGetFieldType_on_non_struct(t *testing.T) {
@@ -190,12 +191,12 @@ func TestGetFieldTag_on_struct(t *testing.T) {
 	dummyStruct := TestStruct{}
 
 	tag, err := GetFieldTag(dummyStruct, "Dummy", "test")
-	assert.NoError(t, err)
-	assert.Equal(t, tag, "dummytag")
+	require.NoError(t, err)
+	assert.Equal(t, "dummytag", tag)
 
 	tag, err = GetFieldTag(dummyStruct, "Yummy", "test")
-	assert.NoError(t, err)
-	assert.Equal(t, tag, "yummytag")
+	require.NoError(t, err)
+	assert.Equal(t, "yummytag", tag)
 }
 
 func TestGetFieldTag_on_struct_pointer(t *testing.T) {
@@ -204,12 +205,12 @@ func TestGetFieldTag_on_struct_pointer(t *testing.T) {
 	dummyStruct := &TestStruct{}
 
 	tag, err := GetFieldTag(dummyStruct, "Dummy", "test")
-	assert.NoError(t, err)
-	assert.Equal(t, tag, "dummytag")
+	require.NoError(t, err)
+	assert.Equal(t, "dummytag", tag)
 
 	tag, err = GetFieldTag(dummyStruct, "Yummy", "test")
-	assert.NoError(t, err)
-	assert.Equal(t, tag, "yummytag")
+	require.NoError(t, err)
+	assert.Equal(t, "yummytag", tag)
 }
 
 func TestGetFieldTag_on_non_struct(t *testing.T) {
@@ -250,8 +251,8 @@ func TestSetField_on_struct_with_valid_value_type(t *testing.T) {
 	}
 
 	err := SetField(&dummyStruct, "Dummy", "abc")
-	assert.NoError(t, err)
-	assert.Equal(t, dummyStruct.Dummy, "abc")
+	require.NoError(t, err)
+	assert.Equal(t, "abc", dummyStruct.Dummy)
 }
 
 func TestSetField_non_existing_field(t *testing.T) {
@@ -295,8 +296,8 @@ func TestFields_on_struct(t *testing.T) {
 	}
 
 	fields, err := Fields(dummyStruct)
-	assert.NoError(t, err)
-	assert.Equal(t, fields, []string{"Dummy", "Yummy"})
+	require.NoError(t, err)
+	assert.Equal(t, []string{"Dummy", "Yummy"}, fields)
 }
 
 func TestFields_on_struct_pointer(t *testing.T) {
@@ -308,8 +309,8 @@ func TestFields_on_struct_pointer(t *testing.T) {
 	}
 
 	fields, err := Fields(dummyStruct)
-	assert.NoError(t, err)
-	assert.Equal(t, fields, []string{"Dummy", "Yummy"})
+	require.NoError(t, err)
+	assert.Equal(t, []string{"Dummy", "Yummy"}, fields)
 }
 
 func TestFields_on_non_struct(t *testing.T) {
@@ -331,8 +332,8 @@ func TestFields_with_non_exported_fields(t *testing.T) {
 	}
 
 	fields, err := Fields(dummyStruct)
-	assert.NoError(t, err)
-	assert.Equal(t, fields, []string{"Dummy", "Yummy"})
+	require.NoError(t, err)
+	assert.Equal(t, []string{"Dummy", "Yummy"}, fields)
 }
 
 func TestHasField_on_struct_with_existing_field(t *testing.T) {
@@ -344,7 +345,7 @@ func TestHasField_on_struct_with_existing_field(t *testing.T) {
 	}
 
 	has, err := HasField(dummyStruct, "Dummy")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, has)
 }
 
@@ -357,7 +358,7 @@ func TestHasField_on_struct_pointer_with_existing_field(t *testing.T) {
 	}
 
 	has, err := HasField(dummyStruct, "Dummy")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, has)
 }
 
@@ -370,7 +371,7 @@ func TestHasField_non_existing_field(t *testing.T) {
 	}
 
 	has, err := HasField(dummyStruct, "Test")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.False(t, has)
 }
 
@@ -393,7 +394,7 @@ func TestHasField_unexported_field(t *testing.T) {
 	}
 
 	has, err := HasField(dummyStruct, "unexported")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.False(t, has)
 }
 
@@ -406,11 +407,11 @@ func TestTags_on_struct(t *testing.T) {
 	}
 
 	tags, err := Tags(dummyStruct, "test")
-	assert.NoError(t, err)
-	assert.Equal(t, tags, map[string]string{
+	require.NoError(t, err)
+	assert.Equal(t, map[string]string{
 		"Dummy": "dummytag",
 		"Yummy": "yummytag",
-	})
+	}, tags)
 }
 
 func TestTags_on_struct_pointer(t *testing.T) {
@@ -422,11 +423,11 @@ func TestTags_on_struct_pointer(t *testing.T) {
 	}
 
 	tags, err := Tags(dummyStruct, "test")
-	assert.NoError(t, err)
-	assert.Equal(t, tags, map[string]string{
+	require.NoError(t, err)
+	assert.Equal(t, map[string]string{
 		"Dummy": "dummytag",
 		"Yummy": "yummytag",
-	})
+	}, tags)
 }
 
 func TestTags_on_non_struct(t *testing.T) {
@@ -447,11 +448,11 @@ func TestItems_on_struct(t *testing.T) {
 	}
 
 	tags, err := Items(dummyStruct)
-	assert.NoError(t, err)
-	assert.Equal(t, tags, map[string]interface{}{
+	require.NoError(t, err)
+	assert.Equal(t, map[string]interface{}{
 		"Dummy": "test",
 		"Yummy": 123,
-	})
+	}, tags)
 }
 
 func TestItems_on_struct_pointer(t *testing.T) {
@@ -463,11 +464,11 @@ func TestItems_on_struct_pointer(t *testing.T) {
 	}
 
 	tags, err := Items(dummyStruct)
-	assert.NoError(t, err)
-	assert.Equal(t, tags, map[string]interface{}{
+	require.NoError(t, err)
+	assert.Equal(t, map[string]interface{}{
 		"Dummy": "test",
 		"Yummy": 123,
-	})
+	}, tags)
 }
 
 func TestItems_on_non_struct(t *testing.T) {
@@ -502,15 +503,15 @@ func TestItems_deep(t *testing.T) {
 	p.Number = 17
 
 	items, err := Items(p)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	itemsDeep, err := ItemsDeep(p)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	assert.Equal(t, len(items), 2)
-	assert.Equal(t, len(itemsDeep), 3)
-	assert.Equal(t, itemsDeep["Name"], "John")
-	assert.Equal(t, itemsDeep["Street"], "Decumanus maximus")
-	assert.Equal(t, itemsDeep["Number"], 17)
+	assert.Len(t, items, 2)
+	assert.Len(t, itemsDeep, 3)
+	assert.Equal(t, "John", itemsDeep["Name"])
+	assert.Equal(t, "Decumanus maximus", itemsDeep["Street"])
+	assert.Equal(t, 17, itemsDeep["Number"])
 }
 
 func TestGetFieldNameByTagValue(t *testing.T) {
@@ -524,8 +525,8 @@ func TestGetFieldNameByTagValue(t *testing.T) {
 	tagJSON := "dummytag"
 	field, err := GetFieldNameByTagValue(dummyStruct, "test", tagJSON)
 
-	assert.NoError(t, err)
-	assert.Equal(t, field, "Dummy")
+	require.NoError(t, err)
+	assert.Equal(t, "Dummy", field)
 }
 
 func TestGetFieldNameByTagValue_on_non_existing_tag(t *testing.T) {
@@ -539,17 +540,17 @@ func TestGetFieldNameByTagValue_on_non_existing_tag(t *testing.T) {
 	// non existing tag value with an existing tag key
 	tagJSON := "tag"
 	_, errTagValue := GetFieldNameByTagValue(dummyStruct, "test", tagJSON)
-	assert.Error(t, errTagValue)
+	require.Error(t, errTagValue)
 
 	// non existing tag key with an existing tag value
 	tagJSON = "dummytag"
 	_, errTagKey := GetFieldNameByTagValue(dummyStruct, "json", tagJSON)
-	assert.Error(t, errTagKey)
+	require.Error(t, errTagKey)
 
 	// non existing tag key and value
 	tagJSON = "tag"
 	_, errTagKeyValue := GetFieldNameByTagValue(dummyStruct, "json", tagJSON)
-	assert.Error(t, errTagKeyValue)
+	require.Error(t, errTagKeyValue)
 }
 
 //nolint:unused
@@ -575,15 +576,15 @@ func TestTags_deep(t *testing.T) {
 	p.Number = 17
 
 	tags, err := Tags(p, "tag")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	tagsDeep, err := TagsDeep(p, "tag")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	assert.Equal(t, len(tags), 2)
-	assert.Equal(t, len(tagsDeep), 3)
-	assert.Equal(t, tagsDeep["Name"], "bu")
-	assert.Equal(t, tagsDeep["Street"], "be")
-	assert.Equal(t, tagsDeep["Number"], "bi")
+	assert.Len(t, tags, 2)
+	assert.Len(t, tagsDeep, 3)
+	assert.Equal(t, "bu", tagsDeep["Name"])
+	assert.Equal(t, "be", tagsDeep["Street"])
+	assert.Equal(t, "bi", tagsDeep["Number"])
 }
 
 //nolint:unused
@@ -609,15 +610,15 @@ func TestFields_deep(t *testing.T) {
 	p.Number = 17
 
 	fields, err := Fields(p)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	fieldsDeep, err := FieldsDeep(p)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	assert.Equal(t, len(fields), 2)
-	assert.Equal(t, len(fieldsDeep), 3)
-	assert.Equal(t, fieldsDeep[0], "Name")
-	assert.Equal(t, fieldsDeep[1], "Street")
-	assert.Equal(t, fieldsDeep[2], "Number")
+	assert.Len(t, fields, 2)
+	assert.Len(t, fieldsDeep, 3)
+	assert.Equal(t, "Name", fieldsDeep[0])
+	assert.Equal(t, "Street", fieldsDeep[1])
+	assert.Equal(t, "Number", fieldsDeep[2])
 }
 
 type SingleString string
@@ -629,13 +630,15 @@ type Bar struct {
 }
 
 func TestAssignable(t *testing.T) {
+	t.Parallel()
+
 	var b Bar
 	expected := []string{"a", "b", "c"}
-	assert.Nil(t, SetField(&b, "A", expected))
+	require.NoError(t, SetField(&b, "A", expected))
 	assert.Equal(t, StringList(expected), b.A)
 
 	err := SetField(&b, "A", []int{0, 1, 2})
-	assert.NotNil(t, err)
+	require.Error(t, err)
 	assert.Equal(t, "provided value type not assignable to obj field type",
 		err.Error())
 }

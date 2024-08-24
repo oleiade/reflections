@@ -29,17 +29,14 @@ issues:
       text: "does not use range value in test Run"
 
 linters-settings:
-  nolintlint:
-    # Disable to ensure that nolint directives don't have a leading space. Default is true.
-    allow-leading-space: false
   exhaustive:
     default-signifies-exhaustive: true
   govet:
-    check-shadowing: true
+    enable-all: true
+    disable:
+      - fieldalignment
   cyclop:
     max-complexity: 25
-  maligned:
-    suggest-new: true
   dupl:
     threshold: 150
   goconst:
@@ -52,6 +49,7 @@ linters-settings:
 linters:
   enable-all: true
   disable:
+    - depguard
     - nlreturn
     - gci
     - gochecknoinits
@@ -61,16 +59,11 @@ linters:
     - testpackage
     - wsl
     - gomnd
-    - goerr113 # most of the errors here are meant for humans
+    - err113
     - goheader
-    - exhaustivestruct
     - thelper
     - gocyclo # replaced by cyclop since it also calculates the package complexity
-    - maligned # replaced by govet 'fieldalignment'
-    - interfacer # deprecated
-    - scopelint # deprecated, replaced by exportloopref
     - wrapcheck # a little bit too much for k6, maybe after https://github.com/tomarrell/wrapcheck/issues/2 is fixed
-    - golint # this linter is deprecated
     - varnamelen
     - ireturn
     - tagliatelle
@@ -80,5 +73,4 @@ linters:
     - grouper
     - decorder
     - nonamedreturns
-    - nosnakecase
   fast: false

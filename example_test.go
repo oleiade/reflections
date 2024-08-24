@@ -34,7 +34,12 @@ func ExampleGetField() {
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		fmt.Println(value)
+
+		// output:
+		// first value
+		// third value
 	}
 }
 
@@ -62,6 +67,10 @@ func ExampleGetFieldKind() {
 		log.Fatal(err)
 	}
 	fmt.Println(secondFieldKind)
+
+	// output:
+	// string
+	// int
 }
 
 func ExampleGetFieldType() {
@@ -88,6 +97,10 @@ func ExampleGetFieldType() {
 		log.Fatal(err)
 	}
 	fmt.Println(secondFieldType)
+
+	// output:
+	// string
+	// int
 }
 
 func ExampleGetFieldTag() {
@@ -104,6 +117,10 @@ func ExampleGetFieldTag() {
 		log.Fatal(err)
 	}
 	fmt.Println(tag)
+
+	// output:
+	// first tag
+	// third tag
 }
 
 func ExampleHasField() {
@@ -120,6 +137,10 @@ func ExampleHasField() {
 	// has == false
 	has, _ = reflections.HasField(s, "FourthField")
 	fmt.Println(has)
+
+	// output:
+	// true
+	// false
 }
 
 func ExampleFields() {
@@ -136,6 +157,9 @@ func ExampleFields() {
 	// []string{"FirstField", "SecondField", "ThirdField"}
 	fields, _ = reflections.Fields(s)
 	fmt.Println(fields)
+
+	// output:
+	// [MyEmbeddedStruct FirstField SecondField ThirdField]
 }
 
 func ExampleItems() {
@@ -151,6 +175,9 @@ func ExampleItems() {
 	// field value map
 	structItems, _ = reflections.Items(s)
 	fmt.Println(structItems)
+
+	// output:
+	// map[FirstField:first value MyEmbeddedStruct:{} SecondField:2 ThirdField:third value]
 }
 
 func ExampleItemsDeep() {
@@ -170,6 +197,9 @@ func ExampleItemsDeep() {
 	// anonymous embedded structs
 	structItems, _ = reflections.ItemsDeep(s)
 	fmt.Println(structItems)
+
+	// output:
+	// map[EmbeddedField:embedded value FirstField:first value SecondField:2 ThirdField:third value]
 }
 
 func ExampleTags() {
@@ -191,6 +221,9 @@ func ExampleTags() {
 	// }
 	structTags, _ = reflections.Tags(s, "matched")
 	fmt.Println(structTags)
+
+	// output:
+	// map[FirstField:first tag MyEmbeddedStruct: SecondField:second tag ThirdField:]
 }
 
 func ExampleSetField() {
@@ -207,12 +240,11 @@ func ExampleSetField() {
 		log.Fatal(err)
 	}
 
-	// If you try to set a field's value using the wrong type,
+	// Note that if you try to set a field's value using the wrong type,
 	// an error will be returned
-	err = reflections.SetField(&s, "FirstField", 123) // err != nil
-	if err != nil {
-		log.Fatal(err)
-	}
+	_ = reflections.SetField(&s, "FirstField", 123) // err != nil
+
+	// output:
 }
 
 func ExampleGetFieldNameByTagValue() {

@@ -112,7 +112,7 @@ func GetFieldNameByTagValue(obj interface{}, tagKey, tagValue string) (string, e
 	objType := objValue.Type()
 	fieldsCount := objType.NumField()
 
-	for i := 0; i < fieldsCount; i++ {
+	for i := range fieldsCount {
 		structField := objType.Field(i)
 		if structField.Tag.Get(tagKey) == tagValue {
 			return structField.Name, nil
@@ -142,7 +142,7 @@ func SetField(obj interface{}, name string, value interface{}) error {
 	structFieldType := structFieldValue.Type()
 	val := reflect.ValueOf(value)
 	if !val.Type().AssignableTo(structFieldType) {
-		invalidTypeError := fmt.Errorf("provided value type not assignable to obj field type")
+		invalidTypeError := errors.New("provided value type not assignable to obj field type")
 		return invalidTypeError
 	}
 
@@ -175,7 +175,7 @@ func Fields(obj interface{}) ([]string, error) {
 
 // FieldsDeep returns "flattened" fields.
 //
-// Note that FieldsDeept treats fields from anonymous inner structs as normal fields.
+// Note that FieldsDeep treats fields from anonymous inner structs as normal fields.
 func FieldsDeep(obj interface{}) ([]string, error) {
 	return fields(obj, true)
 }
@@ -190,7 +190,7 @@ func fields(obj interface{}, deep bool) ([]string, error) {
 	fieldsCount := objType.NumField()
 
 	var allFields []string
-	for i := 0; i < fieldsCount; i++ {
+	for i := range fieldsCount {
 		field := objType.Field(i)
 		if isExportableField(field) {
 			if !deep || !field.Anonymous {
@@ -233,7 +233,7 @@ func items(obj interface{}, deep bool) (map[string]interface{}, error) {
 
 	allItems := make(map[string]interface{})
 
-	for i := 0; i < fieldsCount; i++ {
+	for i := range fieldsCount {
 		field := objType.Field(i)
 		fieldValue := objValue.Field(i)
 
@@ -281,7 +281,7 @@ func tags(obj interface{}, key string, deep bool) (map[string]string, error) {
 
 	allTags := make(map[string]string)
 
-	for i := 0; i < fieldsCount; i++ {
+	for i := range fieldsCount {
 		structField := objType.Field(i)
 		if isExportableField(structField) {
 			if !deep || !structField.Anonymous {
