@@ -553,6 +553,45 @@ func TestGetFieldNameByTagValue_on_non_existing_tag(t *testing.T) {
 	require.Error(t, errTagKeyValue)
 }
 
+func TestGetFieldNameByTagValueDeep(t *testing.T) {
+	t.Parallel()
+
+	type child struct {
+		TestStruct
+	}
+	dummyStruct := child{}
+
+	tagJSON := "dummytag"
+	field, err := GetFieldNameByTagValueDeep(dummyStruct, "test", tagJSON)
+
+	require.NoError(t, err)
+	assert.Equal(t, "Dummy", field)
+}
+
+func TestGetFieldNameByTagValueDeep_on_non_existing_tag(t *testing.T) {
+	t.Parallel()
+
+	type child struct {
+		TestStruct
+	}
+	dummyStruct := child{}
+
+	// non existing tag value with an existing tag key
+	tagJSON := "tag"
+	_, errTagValue := GetFieldNameByTagValueDeep(dummyStruct, "test", tagJSON)
+	require.Error(t, errTagValue)
+
+	// non existing tag key with an existing tag value
+	tagJSON = "dummytag"
+	_, errTagKey := GetFieldNameByTagValueDeep(dummyStruct, "json", tagJSON)
+	require.Error(t, errTagKey)
+
+	// non existing tag key and value
+	tagJSON = "tag"
+	_, errTagKeyValue := GetFieldNameByTagValueDeep(dummyStruct, "json", tagJSON)
+	require.Error(t, errTagKeyValue)
+}
+
 //nolint:unused
 func TestTags_deep(t *testing.T) {
 	t.Parallel()
