@@ -104,6 +104,15 @@ func GetFieldTag(obj interface{}, fieldName, tagKey string) (string, error) {
 // The `obj` parameter must be a `struct`, or a `pointer` to one. If the `obj` parameter doesn't have a field tagged
 // with the `tagKey`, and the matching `tagValue`, this function returns an error.
 func GetFieldNameByTagValue(obj interface{}, tagKey, tagValue string) (string, error) {
+	return getFieldNameByTagValue(obj, tagKey, tagValue, false)
+}
+
+// GetFieldNameByTagValueDeep considers embedded fields too while scanning for a matching a matching `{tagKey}:"{tagValue}"` tag
+func GetFieldNameByTagValueDeep(obj interface{}, tagKey, tagValue string) (string, error) {
+	return getFieldNameByTagValue(obj, tagKey, tagValue, true)
+}
+
+func getFieldNameByTagValue(obj interface{}, tagKey, tagValue string, deep bool) (string, error) {
 	if !isSupportedType(obj, []reflect.Kind{reflect.Struct, reflect.Ptr}) {
 		return "", fmt.Errorf("cannot use GetFieldByTag on a non-struct interface: %w", ErrUnsupportedType)
 	}
@@ -114,8 +123,21 @@ func GetFieldNameByTagValue(obj interface{}, tagKey, tagValue string) (string, e
 
 	for i := range fieldsCount {
 		structField := objType.Field(i)
-		if structField.Tag.Get(tagKey) == tagValue {
-			return structField.Name, nil
+		if isExportableField(structField) {
+			if !deep || !structField.Anonymous {
+				if structField.Tag.Get(tagKey) == tagValue {
+					return structField.Name, nil
+				}
+				continue
+			}
+
+			fieldValue := objValue.Field(i)
+			m, err := getFieldNameByTagValue(fieldValue.Interface(), tagKey, tagValue, deep)
+			if err != nil {
+				return "", fmt.Errorf("cannot get items in %s: %w", structField.Name, err)
+			} else if m != "" {
+				return m, nil
+			}
 		}
 	}
 
