@@ -127,8 +127,13 @@ func GetFieldNameByTagValue(obj interface{}, tagKey, tagValue string) (string, e
 // The `obj` parameter must be a pointer to a struct, otherwise it soundly fails.
 // The provided `value` type should match with the struct field being set.
 func SetField(obj interface{}, name string, value interface{}) error {
+	objValue := reflect.ValueOf(obj)
+	if objValue.Kind() != reflect.Ptr || objValue.IsNil() || objValue.Elem().Kind() != reflect.Struct {
+		return fmt.Errorf("cannot use SetField on a non-struct pointer: %w", ErrUnsupportedType)
+	}
+
 	// Fetch the field reflect.Value
-	structValue := reflect.ValueOf(obj).Elem()
+	structValue := objValue.Elem()
 	structFieldValue := structValue.FieldByName(name)
 
 	if !structFieldValue.IsValid() {
