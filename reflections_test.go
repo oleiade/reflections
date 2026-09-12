@@ -642,3 +642,19 @@ func TestAssignable(t *testing.T) {
 	assert.Equal(t, "provided value type not assignable to obj field type",
 		err.Error())
 }
+
+func TestSetField_unsupported_object(t *testing.T) {
+	t.Parallel()
+
+	var nilStruct *TestStruct
+	var number int
+	ptr := &TestStruct{}
+	for _, obj := range []interface{}{nil, TestStruct{}, nilStruct, number, &number, &ptr} {
+		t.Run(reflect.ValueOf(obj).Kind().String(), func(t *testing.T) {
+			var err error
+			if assert.NotPanics(t, func() { err = SetField(obj, "Dummy", "test") }) {
+				assert.ErrorIs(t, err, ErrUnsupportedType)
+			}
+		})
+	}
+}
